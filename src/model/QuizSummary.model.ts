@@ -1,3 +1,5 @@
-export type QuizSummary = {
+import { Answer } from './Answer.model'
 
+export type QuizSummary = {
+    answers: Answer[]
 }
