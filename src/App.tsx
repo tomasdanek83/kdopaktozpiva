@@ -39,6 +39,10 @@ function App (): ReactElement {
     setQuizSummary(summary)
   }
 
+  const handleRepeatQuiz = (): void => {
+    setQuizSummary(undefined)
+  }
+
   const handleNewQuiz = (): void => {
     setQuizSummary(undefined)
     setQuizParams(undefined)
@@ -53,9 +57,9 @@ function App (): ReactElement {
       </AppBar>
 
       <Container className={classes.container} maxWidth="sm">
-        {quizParams == null && <QuizBuilder onBuild={handleQuizBuild} />}
-        {quizParams != null && <Quiz params={quizParams} onFinished={handleQuizFinished}></Quiz>}
-        {quizSummary != null && <QuizResults summary={quizSummary} onNewQuiz={handleNewQuiz}></QuizResults>}
+        {quizParams == null && quizSummary == null && <QuizBuilder onBuild={handleQuizBuild} />}
+        {quizParams != null && quizSummary == null && <Quiz params={quizParams} onFinished={handleQuizFinished}></Quiz>}
+        {quizSummary != null && <QuizResults summary={quizSummary} onRepeatQuiz={handleRepeatQuiz} onNewQuiz={handleNewQuiz}></QuizResults>}
       </Container>
     </div>
   )

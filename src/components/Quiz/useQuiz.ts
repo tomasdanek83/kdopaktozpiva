@@ -16,6 +16,7 @@ export type useQuizState = {
     incorrectAnswer: boolean
     loading: boolean
     progress?: number
+    answered: boolean
     handleAnswerClick: (bird: Bird) => void
     handleNextRecording: () => void
     handleNextQuestion: () => void
@@ -145,6 +146,7 @@ export default function useQuiz (
         incorrectAnswer,
         loading,
         progress,
+        answered: answers.some(a => a.index === currentQuestion?.index),
         handleAnswerClick,
         handleNextRecording,
         handleNextQuestion,

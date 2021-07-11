@@ -106,6 +106,7 @@ export default function QuizBuilder ({ onBuild }: QuizBuilderProps): ReactElemen
             <div className={classes.formField}>
                 <Button
                     type="submit"
+                    disabled={birds.length < 2}
                     variant="contained"
                     color="primary">Vytvořit</Button>
             </div>

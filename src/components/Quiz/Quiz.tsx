@@ -2,6 +2,7 @@ import { Button, createStyles, makeStyles, Theme, Typography, CircularProgress }
 import React, { ReactElement } from 'react'
 import { QuizParams } from '../../model/QuizParams.model'
 import { QuizSummary } from '../../model/QuizSummary.model'
+import RecordingDetails from '../RecordingDetails/RecordingDetails'
 import RecordingPlayer from '../RecordingPlayer/RecordingPlayer'
 import useQuiz from './useQuiz'
 
@@ -64,6 +65,7 @@ export default function Quiz ({ params, onFinished }: QuizProps): ReactElement {
         incorrectAnswer,
         loading,
         progress,
+        answered,
         handleAnswerClick,
         handleNextRecording,
         handleNextQuestion,
@@ -89,6 +91,10 @@ export default function Quiz ({ params, onFinished }: QuizProps): ReactElement {
             <RecordingPlayer recording={recording}></RecordingPlayer>
         </div>
 
+        <div className={classes.player}>
+            <RecordingDetails recording={recording}></RecordingDetails>
+        </div>
+
         <div className={classes.answers}>
             {params.birds.map((bird, index) => {
                 return <Button
@@ -108,11 +114,13 @@ export default function Quiz ({ params, onFinished }: QuizProps): ReactElement {
         <div className={classes.nextQuestion}>
             {!isLastQuestion && <Button
                 onClick={handleNextQuestion}
+                disabled={!answered}
                 variant="contained"
                 color="primary">Další otázka</Button>}
 
             {isLastQuestion && <Button
                 onClick={handleFinished}
+                disabled={!answered}
                 variant="contained"
                 color="primary">Zobrazit výsledky</Button>}
         </div>
