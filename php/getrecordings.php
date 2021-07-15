@@ -45,7 +45,8 @@ switch($_SERVER['REQUEST_METHOD']){
         $type = $_GET["type"];
         $page = $_GET["page"];
 
-        $query = "$name+area:europe";
+        $query = "$name";
+        //$query = "$name+area:europe";
 
         if($type && $type != "all") {
           $query = $query."+type:$type";

@@ -4,6 +4,6 @@ import { Bird } from './Bird.model'
 export type Answer = {
     index: number
     bird: Bird
-    answer: Bird
+    pickedBird: Bird
     recording: Recording
 }

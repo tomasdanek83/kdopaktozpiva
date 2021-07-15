@@ -6,6 +6,7 @@ import { QuizParams } from './model/QuizParams.model'
 import QuizBuilder from './components/QuizBuilder/QuizBuilder'
 import { QuizSummary } from './model/QuizSummary.model'
 import QuizResults from './components/QuizResults/QuizResults'
+import { Service } from './components/Service/Service'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -61,6 +62,8 @@ function App (): ReactElement {
         {quizParams != null && quizSummary == null && <Quiz params={quizParams} onFinished={handleQuizFinished}></Quiz>}
         {quizSummary != null && <QuizResults summary={quizSummary} onRepeatQuiz={handleRepeatQuiz} onNewQuiz={handleNewQuiz}></QuizResults>}
       </Container>
+
+      <Service></Service>
     </div>
   )
 }

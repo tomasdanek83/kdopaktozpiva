@@ -108,7 +108,7 @@ export default function useQuiz (
             const answer: Answer = {
                 index: question.index,
                 bird: question.bird,
-                answer: bird,
+                pickedBird: bird,
                 recording: recording as Recording
             }
 

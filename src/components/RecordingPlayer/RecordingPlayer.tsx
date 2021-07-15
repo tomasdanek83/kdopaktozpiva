@@ -5,13 +5,14 @@ import 'react-h5-audio-player/src/styles.scss'
 
 export type RecordingPlayerProps = {
     recording?: Recording
+    autoPlay?: boolean
 }
 
-export default function RecordingPlayer ({ recording }: RecordingPlayerProps): ReactElement {
+export default function RecordingPlayer ({ recording, autoPlay }: RecordingPlayerProps): ReactElement {
     return (<>
         <div>
             <AudioPlayer
-                autoPlay
+                autoPlay={autoPlay}
                 src={recording?.file}
             /></div>
     </>)

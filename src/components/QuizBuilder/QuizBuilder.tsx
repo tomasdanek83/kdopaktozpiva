@@ -84,7 +84,7 @@ export default function QuizBuilder ({ onBuild }: QuizBuilderProps): ReactElemen
                         <TextField
                             {...params}
                             variant="outlined"
-                            label="Ptačí druhy"
+                            label="Ptačí druhy (minimálně 2)"
                         />
                     )}
                 />
