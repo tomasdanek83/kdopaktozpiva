@@ -6,6 +6,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete'
 import { useBirdsApi } from '../../hooks/useBirdsApi'
 import { AutocompleteChangeReason, AutocompleteChangeDetails } from '@material-ui/lab'
 import { SoundType } from '../../api/SoundType.model'
+import { QuizMode } from '../../model/QuizMode.model'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -24,13 +25,14 @@ export default function QuizBuilder ({ onBuild }: QuizBuilderProps): ReactElemen
     const [allBirds, setAllBirds] = useState<Bird[]>([])
     const [questionCount, setQuestionCount] = useState<number>(10)
     const [soundType, setSoundType] = useState<SoundType>('all')
+    const [quizMode, setQuizMode] = useState<QuizMode>('education')
 
-    const { getAllBirds } = useBirdsApi()
+    const { getAllCzechBirds } = useBirdsApi()
 
     const classes = useStyles()
 
     useEffect(() => {
-        setAllBirds(getAllBirds())
+        setAllBirds(getAllCzechBirds())
     }, [])
 
     const handleQuestionCountChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -49,11 +51,16 @@ export default function QuizBuilder ({ onBuild }: QuizBuilderProps): ReactElemen
         setSoundType(event.target.value as SoundType)
     }
 
+    const handleQuizModeChange = (event: React.ChangeEvent<{ value: unknown }>): void => {
+        setQuizMode(event.target.value as QuizMode)
+    }
+
     const handleSubmit = (): void => {
         onBuild({
             birds: birds,
             questionCount: questionCount,
-            type: soundType
+            type: soundType,
+            mode: quizMode
         })
     }
 
@@ -90,18 +97,34 @@ export default function QuizBuilder ({ onBuild }: QuizBuilderProps): ReactElemen
                 />
             </div>
 
-            <FormControl variant="outlined" className={classes.formField}>
-                <InputLabel id="sound-type-label">Typ zvuku</InputLabel>
-                <Select
-                    labelId="sound-type-label"
-                    value={soundType}
-                    onChange={handleSoundTypeChange}
-                    label="Typ zvuku">
-                    <MenuItem value={'all'}>Všechny zvuky</MenuItem>
-                    <MenuItem value={'song'}>Pouze zpěv</MenuItem>
-                    <MenuItem value={'call'}>Pouze volání</MenuItem>
-                </Select>
-            </FormControl>
+            <div className={classes.formField}>
+                <FormControl variant="outlined">
+                    <InputLabel id="sound-type-label">Typ zvuku</InputLabel>
+                    <Select
+                        labelId="sound-type-label"
+                        value={soundType}
+                        onChange={handleSoundTypeChange}
+                        label="Typ zvuku">
+                        <MenuItem value={'all'}>Všechny zvuky</MenuItem>
+                        <MenuItem value={'song'}>Pouze zpěv</MenuItem>
+                        <MenuItem value={'call'}>Pouze volání</MenuItem>
+                    </Select>
+                </FormControl>
+            </div>
+
+            <div className={classes.formField}>
+                <FormControl variant="outlined" className={classes.formField}>
+                    <InputLabel id="quiz-mode-label">Režim kvízu</InputLabel>
+                    <Select
+                        labelId="quiz-mode-label"
+                        value={quizMode}
+                        onChange={handleQuizModeChange}
+                        label="Režim kvízu">
+                        <MenuItem value={'education'}>Výukový (více pokusů na každou otázku)</MenuItem>
+                        <MenuItem value={'competition'}>Soutěžní (jeden pokus na každou otázku )</MenuItem>
+                    </Select>
+                </FormControl>
+            </div>
 
             <div className={classes.formField}>
                 <Button

@@ -67,7 +67,7 @@ const search = async (apiUrl: string, filters: SearchFilters, page?: number): Pr
 }
 
 export const useRecordingsApi = (): XenoCantoApi => {
-  const apiUrl = 'http://kdopaktozpiva.dankovi.org/api/getrecordings.php'
+  const apiUrl = 'https://www.kdopaktozpiva.cz/api/getrecordings.php'
 
   return {
     search: async (filters: SearchFilters, page?: number): Promise<SearchResult> => {

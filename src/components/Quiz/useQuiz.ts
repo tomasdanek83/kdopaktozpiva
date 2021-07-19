@@ -17,10 +17,14 @@ export type useQuizState = {
     loading: boolean
     progress?: number
     answered: boolean
+    recordingDetailsOpened: boolean
     handleAnswerClick: (bird: Bird) => void
     handleNextRecording: () => void
     handleNextQuestion: () => void
     handleFinished: () => void
+    toggleRecordingDetails: (open: boolean) => (
+        event: React.KeyboardEvent | React.MouseEvent
+    ) => void
 }
 
 export default function useQuiz (
@@ -35,6 +39,8 @@ export default function useQuiz (
     const [loading, setLoading] = useState<boolean>(true)
     const [progress, setProgress] = useState<number>()
     const [answers, setAnswers] = useState<Answer[]>([])
+    const [recordingsHistory, setRecordingsHistory] = useState<Recording[]>([])
+    const [recordingDetailsOpened, setRecordingDetailsOpened] = useState(false)
 
     const recordingsApi = useRecordingsApi()
 
@@ -83,6 +89,7 @@ export default function useQuiz (
             }
 
             setQuestions(generatedQuestions)
+            console.log('Questions', generatedQuestions)
             const firstQuestion = generatedQuestions[0]
             setCurrentQuestion(firstQuestion)
             setRandomRecording(firstQuestion)
@@ -91,8 +98,13 @@ export default function useQuiz (
     }, [birdRecordings])
 
     const setRandomRecording = (question: Question): void => {
-        const randomRecording = question.birdRecordings.recordings[Math.floor(Math.random() * question.birdRecordings.recordings.length)]
+        const remainingRecordings = question.birdRecordings.recordings.filter(r => !recordingsHistory.includes(r))
+        const randomRecording = remainingRecordings[Math.floor(Math.random() * remainingRecordings.length)]
+
+        console.log('setRandomRecording', randomRecording)
+
         setRecording(randomRecording)
+        setRecordingsHistory(prevState => [...prevState, randomRecording])
     }
 
     const handleAnswerClick = (bird: Bird): void => {
@@ -139,6 +151,20 @@ export default function useQuiz (
         onFinished(summary)
     }
 
+    const toggleRecordingDetails = (open: boolean) => (
+        event: React.KeyboardEvent | React.MouseEvent
+    ) => {
+        if (
+            event.type === 'keydown' &&
+            ((event as React.KeyboardEvent).key === 'Tab' ||
+                (event as React.KeyboardEvent).key === 'Shift')
+        ) {
+            return
+        }
+
+        setRecordingDetailsOpened(open)
+    }
+
     return {
         question: currentQuestion,
         recording,
@@ -147,9 +173,11 @@ export default function useQuiz (
         loading,
         progress,
         answered: answers.some(a => a.index === currentQuestion?.index),
+        recordingDetailsOpened,
         handleAnswerClick,
         handleNextRecording,
         handleNextQuestion,
-        handleFinished
+        handleFinished,
+        toggleRecordingDetails
     }
 }

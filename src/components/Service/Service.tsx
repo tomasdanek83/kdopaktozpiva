@@ -171,7 +171,7 @@ export function Service (): ReactElement {
         // console.log(joined)
         console.log(JSON.stringify(joined, null, '\t'))
 
-        console.log(birdsCzech.filter(bc => !birdsWP.some(bwp => bwp.czechName === bc.czech)))
+        console.log(birdsCzech.filter(bc => !birdsWP.some(bwp => (bwp.czechName === bc.czech))))
     }, [])
 
     return (<></>)

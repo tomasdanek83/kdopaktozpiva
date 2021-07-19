@@ -1,8 +1,14 @@
-import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@material-ui/core'
+import { createStyles, makeStyles, Theme, Typography } from '@material-ui/core'
 import React, { ReactElement } from 'react'
 import { Recording } from '../../api/Recording.model'
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        root: {
+            padding: '1rem'
+        }
+    })
+)
 export type RecordingDetailsProps = {
     recording?: Recording
 }
@@ -12,20 +18,22 @@ export default function RecordingDetails ({ recording }: RecordingDetailsProps):
         return (<></>)
     }
 
-    return (<>
-        <Accordion>
-            <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1a-content"
-                id="panel1a-header"
-            >
-                <Typography>Informace o nahrávce</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-                <Typography>
-                    <div><a href={recording.url}>{recording.url}</a></div>
-                </Typography>
-            </AccordionDetails>
-        </Accordion>
-    </>)
+    const classes = useStyles()
+
+    return (<div className={classes.root}>
+        <Typography variant="h5">Informace o nahrávce</Typography>
+        <Typography>
+            <p></p>
+            <table>
+                <tr>
+                    <th>Odkaz</th>
+                    <td><a href={recording.url}>{recording.url.replace('//', '')}</a></td>
+                </tr>
+                <tr>
+                    <th>Lokalita</th>
+                    <td>{recording.loc}</td>
+                </tr>
+            </table>
+        </Typography>
+    </div>)
 }

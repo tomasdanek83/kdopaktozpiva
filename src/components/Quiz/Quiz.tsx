@@ -1,4 +1,4 @@
-import { Button, createStyles, makeStyles, Theme, Typography, CircularProgress } from '@material-ui/core'
+import { Button, createStyles, makeStyles, Theme, Typography, CircularProgress, Drawer } from '@material-ui/core'
 import React, { ReactElement } from 'react'
 import { QuizParams } from '../../model/QuizParams.model'
 import { QuizSummary } from '../../model/QuizSummary.model'
@@ -12,12 +12,12 @@ const useStyles = makeStyles((theme: Theme) =>
             marginTop: '1rem'
         },
         answers: {
-            display: 'flex',
-            justifyContent: 'center',
+            textAlign: 'center',
             marginTop: '1rem'
         },
         answer: {
-            margin: theme.spacing(1)
+            margin: theme.spacing(1),
+            whiteSpace: 'nowrap'
         },
         correctAnswer: {
             display: 'flex',
@@ -66,21 +66,24 @@ export default function Quiz ({ params, onFinished }: QuizProps): ReactElement {
         loading,
         progress,
         answered,
+        recordingDetailsOpened,
         handleAnswerClick,
         handleNextRecording,
         handleNextQuestion,
-        handleFinished
+        handleFinished,
+        toggleRecordingDetails
     } = useQuiz(params, onFinished)
 
     const classes = useStyles()
 
     if (loading) {
         return (<div className={classes.loading}>
-            <CircularProgress variant="determinate" value={progress} /><span className={classes.loadingText}>Připravuji kvíz...</span>
+            <CircularProgress variant="indeterminate" value={progress} /><span className={classes.loadingText}>Připravuji kvíz...</span>
         </div>)
     }
 
     const isLastQuestion = question?.index === params.questionCount
+    const isEducation = params.mode === 'education'
 
     return (<>
         <Typography variant="h5">
@@ -88,11 +91,14 @@ export default function Quiz ({ params, onFinished }: QuizProps): ReactElement {
         </Typography>
 
         <div className={classes.player}>
-            <RecordingPlayer recording={recording}></RecordingPlayer>
+            <RecordingPlayer recording={recording} autoPlay={true}></RecordingPlayer>
         </div>
 
         <div className={classes.player}>
-            <RecordingDetails recording={recording}></RecordingDetails>
+            <Button onClick={toggleRecordingDetails(true)}>Informace o nahrávce</Button>
+            <Drawer anchor="right" open={recordingDetailsOpened} onClose={toggleRecordingDetails(false)}>
+                <RecordingDetails recording={recording}></RecordingDetails>
+            </Drawer>
         </div>
 
         <div className={classes.answers}>
@@ -101,6 +107,7 @@ export default function Quiz ({ params, onFinished }: QuizProps): ReactElement {
                     onClick={() => { handleAnswerClick(bird) }}
                     className={classes.answer}
                     variant="outlined"
+                    disabled={!isEducation && answered}
                     key={index}>{bird.czechName}
                 </Button>
             })}
@@ -109,7 +116,7 @@ export default function Quiz ({ params, onFinished }: QuizProps): ReactElement {
         {correctAnswer && <div className={classes.correctAnswer}>Správná odpověď</div>}
         {incorrectAnswer && <div className={classes.incorrectAnswer}>Nesprávná odpověď</div>}
 
-        {incorrectAnswer && <div className={classes.nextRecording}><Button onClick={handleNextRecording}>Zkusit jinou nahrávku</Button></div>}
+        {isEducation && incorrectAnswer && <div className={classes.nextRecording}><Button onClick={handleNextRecording}>Zkusit jinou nahrávku</Button></div>}
 
         <div className={classes.nextQuestion}>
             {!isLastQuestion && <Button
