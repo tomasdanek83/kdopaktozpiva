@@ -9,7 +9,7 @@ import { Question } from '../../model/Question.model'
 import { QuizParams } from '../../model/QuizParams.model'
 import { QuizSummary } from '../../model/QuizSummary.model'
 
-export type useQuizState = {
+export type useQuizQuestionsState = {
     question?: Question
     recording?: Recording
     correctAnswer: boolean
@@ -27,9 +27,9 @@ export type useQuizState = {
     ) => void
 }
 
-export default function useQuiz (
+export default function useQuizQuestions (
     params: QuizParams,
-    onFinished: (summary: QuizSummary) => void): useQuizState {
+    onFinished: (summary: QuizSummary) => void): useQuizQuestionsState {
     const [recording, setRecording] = useState<Recording>()
     const [birdRecordings, setBirdRecordings] = useState<BirdRecordings[]>([])
     const [questions, setQuestions] = useState<Question[]>([])

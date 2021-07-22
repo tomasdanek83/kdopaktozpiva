@@ -1,26 +1,26 @@
-import { AppBar, Container, createStyles, makeStyles, Theme, Typography } from '@material-ui/core'
-import React, { ReactElement, useState } from 'react'
+import { AppBar, Button, Container, createStyles, IconButton, makeStyles, Theme, Toolbar, Typography } from '@material-ui/core'
+import React, { ReactElement } from 'react'
 import './App.scss'
+import { BrowserRouter as Router, Switch, Route, Link as RouterLink } from 'react-router-dom'
 import Quiz from './components/Quiz/Quiz'
-import { QuizParams } from './model/QuizParams.model'
-import QuizBuilder from './components/QuizBuilder/QuizBuilder'
-import { QuizSummary } from './model/QuizSummary.model'
-import QuizResults from './components/QuizResults/QuizResults'
+import About from './components/About/About'
+import InfoIcon from '@material-ui/icons/Info'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       flexGrow: 1
     },
-    menuButton: {
-      marginRight: theme.spacing(2)
-    },
     title: {
       flexGrow: 1,
-      margin: theme.spacing(1)
+      margin: theme.spacing(1),
+      color: 'white'
     },
     container: {
       padding: '1rem'
+    },
+    about: {
+      color: 'white'
     }
   })
 )
@@ -28,40 +28,33 @@ const useStyles = makeStyles((theme: Theme) =>
 function App (): ReactElement {
   const classes = useStyles()
 
-  const [quizParams, setQuizParams] = useState<QuizParams>()
-  const [quizSummary, setQuizSummary] = useState<QuizSummary>()
-
-  const handleQuizBuild = (params: QuizParams): void => {
-    setQuizParams(params)
-  }
-
-  const handleQuizFinished = (summary: QuizSummary): void => {
-    setQuizSummary(summary)
-  }
-
-  const handleRepeatQuiz = (): void => {
-    setQuizSummary(undefined)
-  }
-
-  const handleNewQuiz = (): void => {
-    setQuizSummary(undefined)
-    setQuizParams(undefined)
-  }
-
   return (
-    <div className={classes.root}>
-      <AppBar position="static">
-        <Typography variant="h6" className={classes.title}>
-          Kdopak to zpívá?
-        </Typography>
-      </AppBar>
+    <Router>
+      <div className={classes.root}>
+        <AppBar position="static">
+          <Toolbar>
+            <Typography variant="h6" className={classes.title}>
+              Kdopak to zpívá?
+            </Typography>
+            <Button component={RouterLink} to="/" color="inherit">Nový kvíz</Button>
+            <IconButton component={RouterLink} to="/about" color="inherit">
+              <InfoIcon></InfoIcon>
+            </IconButton>
+          </Toolbar>
+        </AppBar>
 
-      <Container className={classes.container} maxWidth="sm">
-        {quizParams == null && quizSummary == null && <QuizBuilder onBuild={handleQuizBuild} />}
-        {quizParams != null && quizSummary == null && <Quiz params={quizParams} onFinished={handleQuizFinished}></Quiz>}
-        {quizSummary != null && <QuizResults summary={quizSummary} onRepeatQuiz={handleRepeatQuiz} onNewQuiz={handleNewQuiz}></QuizResults>}
-      </Container>
-    </div>
+        <Container className={classes.container} maxWidth="sm">
+          <Switch>
+            <Route path="/about">
+              <About />
+            </Route>
+            <Route path="/">
+              <Quiz />
+            </Route>
+          </Switch>
+        </Container>
+      </div>
+    </Router>
   )
 }
 
