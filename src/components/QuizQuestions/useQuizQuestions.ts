@@ -8,6 +8,7 @@ import { BirdRecordings } from '../../model/BirdRecordings.model'
 import { Question } from '../../model/Question.model'
 import { QuizParams } from '../../model/QuizParams.model'
 import { QuizSummary } from '../../model/QuizSummary.model'
+import { useSnackbar } from 'notistack'
 
 export type useQuizQuestionsState = {
     question?: Question
@@ -43,6 +44,7 @@ export default function useQuizQuestions (
     const [recordingDetailsOpened, setRecordingDetailsOpened] = useState(false)
 
     const recordingsApi = useRecordingsApi()
+    const { enqueueSnackbar } = useSnackbar()
 
     useEffect(() => {
         const loadBirdRecordings = (): void => {
@@ -61,6 +63,7 @@ export default function useQuizQuestions (
                     }])
                 }).catch(error => {
                     console.error('XenoCantoApi search failed', error)
+                    enqueueSnackbar('Failed to get recordings', { variant: 'error' })
                 })
             })
         }

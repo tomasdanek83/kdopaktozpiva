@@ -2,7 +2,7 @@ import axios from 'axios'
 import { SearchFilters } from '../api/SearchFilters.model'
 import { SearchResult } from '../api/SearchResult.model'
 
-export type XenoCantoApi = {
+export type RecordingsApi = {
   search: (filters: SearchFilters, page?: number) => Promise<SearchResult>
 }
 
@@ -66,7 +66,7 @@ const search = async (apiUrl: string, filters: SearchFilters, page?: number): Pr
   })
 }
 
-export const useRecordingsApi = (): XenoCantoApi => {
+export const useRecordingsApi = (): RecordingsApi => {
   const apiUrl = 'https://www.kdopaktozpiva.cz/api/getrecordings.php'
 
   return {
