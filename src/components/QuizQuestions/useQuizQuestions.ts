@@ -19,6 +19,7 @@ export type useQuizQuestionsState = {
     progress?: number
     answered: boolean
     recordingDetailsOpened: boolean
+    insufficientBirdRecordings: BirdRecordings[]
     handleAnswerClick: (bird: Bird) => void
     handleNextRecording: () => void
     handleNextQuestion: () => void
@@ -42,6 +43,7 @@ export default function useQuizQuestions (
     const [answers, setAnswers] = useState<Answer[]>([])
     const [recordingsHistory, setRecordingsHistory] = useState<Recording[]>([])
     const [recordingDetailsOpened, setRecordingDetailsOpened] = useState(false)
+    const [insufficientBirdRecordings, setInsufficientBirdRecordings] = useState<BirdRecordings[]>([])
 
     const recordingsApi = useRecordingsApi()
     const { enqueueSnackbar } = useSnackbar()
@@ -56,6 +58,7 @@ export default function useQuizQuestions (
 
                 recordingsApi.search(filters, 1).then(result => {
                     console.log('XentoCantoApi search result', result)
+
                     setBirdRecordings(prevState => [...prevState, {
                         bird: bird,
                         recordings: result.recordings,
@@ -80,6 +83,16 @@ export default function useQuizQuestions (
             console.log('Recordings loaded for all birds', birdRecordings)
 
             const generatedQuestions: Question[] = []
+
+            const insufficientRecordings: BirdRecordings[] =
+                birdRecordings.filter(br => br.recordings.length < params.questionCount)
+
+            if (insufficientRecordings.length > 0) {
+                console.log('insufficientBirdRecordings', insufficientRecordings)
+                setInsufficientBirdRecordings(insufficientRecordings)
+                setLoading(false)
+                return
+            }
 
             for (let i = 0; i < params.questionCount; i++) {
                 const randomBird = params.birds[Math.floor(Math.random() * params.birds.length)]
@@ -177,6 +190,7 @@ export default function useQuizQuestions (
         progress,
         answered: answers.some(a => a.index === currentQuestion?.index),
         recordingDetailsOpened,
+        insufficientBirdRecordings,
         handleAnswerClick,
         handleNextRecording,
         handleNextQuestion,

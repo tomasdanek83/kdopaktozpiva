@@ -17,13 +17,14 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export type QuizBuilderProps = {
+    initialParams: QuizParams
     onBuild: (params: QuizParams) => void
 }
 
-export default function QuizBuilder ({ onBuild }: QuizBuilderProps): ReactElement {
-    const [birds, setBirds] = useState<Bird[]>([])
+export default function QuizBuilder ({ initialParams, onBuild }: QuizBuilderProps): ReactElement {
+    const [birds, setBirds] = useState<Bird[]>(initialParams.birds)
     const [allBirds, setAllBirds] = useState<Bird[]>([])
-    const [questionCount, setQuestionCount] = useState<number>(10)
+    const [questionCount, setQuestionCount] = useState<number>(initialParams.questionCount)
     const [soundType, setSoundType] = useState<SoundType>('all')
     const [quizMode, setQuizMode] = useState<QuizMode>('education')
 

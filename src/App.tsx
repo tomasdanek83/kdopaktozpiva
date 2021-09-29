@@ -1,7 +1,6 @@
 import { AppBar, Button, Container, createStyles, IconButton, makeStyles, Theme, Toolbar, Typography } from '@material-ui/core'
-import React, { ReactElement } from 'react'
+import React, { ReactElement, useState } from 'react'
 import './App.scss'
-import { BrowserRouter as Router, Switch, Route, Link as RouterLink } from 'react-router-dom'
 import Quiz from './components/Quiz/Quiz'
 import About from './components/About/About'
 import InfoIcon from '@material-ui/icons/Info'
@@ -25,36 +24,43 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
+type AppView = 'quiz' | 'about'
+
 function App (): ReactElement {
   const classes = useStyles()
+  const [appView, setAppView] = useState<AppView>('quiz')
+  const [resetToken, setResetToken] = useState<string>()
+
+  const handleNewQuiz = (): void => {
+    setResetToken(new Date().getTime().toString())
+    setAppView('quiz')
+  }
+
+  const handleAbout = (): void => {
+    setAppView('about')
+  }
 
   return (
-    <Router>
-      <div className={classes.root}>
-        <AppBar position="static">
-          <Toolbar>
-            <Typography variant="h6" className={classes.title}>
-              Kdopak to zpívá?
-            </Typography>
-            <Button component={RouterLink} to="/" color="inherit">Nový kvíz</Button>
-            <IconButton component={RouterLink} to="/about" color="inherit">
-              <InfoIcon></InfoIcon>
-            </IconButton>
-          </Toolbar>
-        </AppBar>
+    <div className={classes.root}>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" className={classes.title}>
+            Kdopak to zpívá?
+          </Typography>
 
-        <Container className={classes.container} maxWidth="sm">
-          <Switch>
-            <Route path="/about">
-              <About />
-            </Route>
-            <Route path="/">
-              <Quiz />
-            </Route>
-          </Switch>
-        </Container>
-      </div>
-    </Router>
+          <Button onClick={handleNewQuiz} color="inherit">Nový kvíz</Button>
+
+          <IconButton onClick={handleAbout} color="inherit">
+            <InfoIcon></InfoIcon>
+          </IconButton>
+        </Toolbar>
+      </AppBar>
+
+      <Container className={classes.container} maxWidth="sm">
+        {appView === 'about' && <About />}
+        {appView === 'quiz' && <Quiz resetToken={resetToken} />}
+      </Container>
+    </div>
   )
 }
 
