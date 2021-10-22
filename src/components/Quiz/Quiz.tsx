@@ -9,7 +9,8 @@ const defaultQuizParams: QuizParams = {
     birds: [],
     questionCount: 10,
     type: 'all',
-    mode: 'education'
+    mode: 'education',
+    quality: 'high'
 }
 
 export type QuizProps = {

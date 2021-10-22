@@ -1,6 +1,8 @@
 import { Typography } from '@material-ui/core'
 import React, { ReactElement } from 'react'
 
+const version = '0.2'
+
 export default function About (): ReactElement {
     return (<>
         <Typography variant="h5">
@@ -20,6 +22,10 @@ export default function About (): ReactElement {
             <ul>
                 <li><a href="https://www.xeno-canto.org/">www.xeno-canto.org</a> - Nahrávky</li>
             </ul>
+        </Typography>
+
+        <Typography variant="body1">
+            <p>Verze aplikace: {version}</p>
         </Typography>
     </>)
 }

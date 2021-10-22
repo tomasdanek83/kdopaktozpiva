@@ -1,4 +1,4 @@
-import { RecordingQuality } from './RecordingQuality.model'
+import { RecordingQualityLevel } from '../model/RecordingQualityLevel.model'
 import { SoundType } from './SoundType.model'
 
 export type SearchFilters = {
@@ -8,6 +8,5 @@ export type SearchFilters = {
     country?: string
     also?: string
     type?: SoundType
-    quality?: RecordingQuality
-    qualityGreaterThan?: RecordingQuality
+    quality?: RecordingQualityLevel
 }

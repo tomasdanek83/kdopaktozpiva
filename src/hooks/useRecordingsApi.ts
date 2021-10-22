@@ -9,8 +9,6 @@ export type RecordingsApi = {
 const getQueryParams = (filters: SearchFilters, page?: number): URLSearchParams => {
   const params = new URLSearchParams()
 
-  // const queryParams: string[] = []
-
   if (filters.name != null) {
     params.append('name', filters.name)
   }
@@ -19,35 +17,9 @@ const getQueryParams = (filters: SearchFilters, page?: number): URLSearchParams 
     params.append('type', filters.type)
   }
 
-  // if (filters.genus != null) {
-  //   queryParams.push(`gen:${filters.genus}`)
-  // }
-
-  // if (filters.subSpecies != null) {
-  //   queryParams.push(`ssp:${filters.subSpecies}`)
-  // }
-
-  // if (filters.country != null) {
-  //   queryParams.push(`cnt:${filters.country}`)
-  // }
-
-  // if (filters.type != null) {
-  //   queryParams.push(`type:${filters.type}`)
-  // }
-
-  // if (filters.quality != null) {
-  //   queryParams.push(`q:${filters.quality}`)
-  // }
-
-  // if (filters.qualityGreaterThan != null) {
-  //   queryParams.push(`q_gt:${filters.qualityGreaterThan}`)
-  // }
-
-  // if (queryParams.length === 0) {
-  //   throw Error('At least one filter must be specified')
-  // }
-
-  // params.append('query', queryParams.join(' '))
+  if (filters.quality != null) {
+    params.append('quality', filters.quality)
+  }
 
   if (page != null) {
     params.append('page', page.toString())

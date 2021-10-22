@@ -53,7 +53,8 @@ export default function useQuizQuestions (
             params.birds.forEach(bird => {
                 const filters: SearchFilters = {
                     name: bird.scientificName,
-                    type: params.type
+                    type: params.type,
+                    quality: params.quality
                 }
 
                 recordingsApi.search(filters, 1).then(result => {

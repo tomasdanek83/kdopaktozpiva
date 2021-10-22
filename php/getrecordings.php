@@ -43,6 +43,7 @@ switch($_SERVER['REQUEST_METHOD']){
 
         $name = str_replace(" ", "+", $_GET["name"]);
         $type = $_GET["type"];
+        $quality = $_GET["quality"];
         $page = $_GET["page"];
 
         $query = "$name+area:europe";
@@ -51,10 +52,14 @@ switch($_SERVER['REQUEST_METHOD']){
           $query = $query."+type:$type";
         } 
 
+        if($quality && $quality == "high") {
+          $query = $query."+q_gt:D";
+        } 
+
         $url = "https://www.xeno-canto.org/api/2/recordings?query=$query&page=$page";
 
         $get_data = callAPI('GET', $url, false);
-
+        
         echo $get_data;
 
         break;

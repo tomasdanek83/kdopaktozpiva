@@ -7,6 +7,7 @@ import { useBirdsApi } from '../../hooks/useBirdsApi'
 import { AutocompleteChangeReason, AutocompleteChangeDetails } from '@material-ui/lab'
 import { SoundType } from '../../api/SoundType.model'
 import { QuizMode } from '../../model/QuizMode.model'
+import { RecordingQualityLevel } from '../../model/RecordingQualityLevel.model'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -27,6 +28,7 @@ export default function QuizBuilder ({ initialParams, onBuild }: QuizBuilderProp
     const [questionCount, setQuestionCount] = useState<number>(initialParams.questionCount)
     const [soundType, setSoundType] = useState<SoundType>('all')
     const [quizMode, setQuizMode] = useState<QuizMode>('education')
+    const [quality, setQuality] = useState<RecordingQualityLevel>('high')
 
     const { getAllCzechBirds } = useBirdsApi()
 
@@ -56,12 +58,17 @@ export default function QuizBuilder ({ initialParams, onBuild }: QuizBuilderProp
         setQuizMode(event.target.value as QuizMode)
     }
 
+    const handleQualityChange = (event: React.ChangeEvent<{ value: unknown }>): void => {
+        setQuality(event.target.value as RecordingQualityLevel)
+    }
+
     const handleSubmit = (): void => {
         onBuild({
             birds: birds,
             questionCount: questionCount,
             type: soundType,
-            mode: quizMode
+            mode: quizMode,
+            quality: quality
         })
     }
 
@@ -109,6 +116,20 @@ export default function QuizBuilder ({ initialParams, onBuild }: QuizBuilderProp
                         <MenuItem value={'all'}>Všechny zvuky</MenuItem>
                         <MenuItem value={'song'}>Pouze zpěv</MenuItem>
                         <MenuItem value={'call'}>Pouze volání</MenuItem>
+                    </Select>
+                </FormControl>
+            </div>
+
+            <div className={classes.formField}>
+                <FormControl variant="outlined" className={classes.formField}>
+                    <InputLabel id="quality-label">Kvalita nahrávek</InputLabel>
+                    <Select
+                        labelId="quality-label"
+                        value={quality}
+                        onChange={handleQualityChange}
+                        label="Kvalita nahrávek">
+                        <MenuItem value={'high'}>Pouze kvalitní nahrávky</MenuItem>
+                        <MenuItem value={'all'}>Všechny nahrávky</MenuItem>
                     </Select>
                 </FormControl>
             </div>
