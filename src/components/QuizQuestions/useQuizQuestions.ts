@@ -152,6 +152,7 @@ export default function useQuizQuestions (
 
         // If there are not enough remaining recordings, disable next recording for remaining questions
         if ((remainingBirdQuestions.length + 1) > (remainingRecordings.length - 1)) {
+            console.log(`Not enough recordings for ${question.bird.scientificName} to show next recording, disabling the button`, remainingBirdQuestions.length, remainingRecordings.length)
             setNextRecordingEnabled(false)
         }
     }
