@@ -69,6 +69,7 @@ export default function QuizQuestions ({ params, onRepeatQuiz, onFinished }: Qui
         answered,
         recordingDetailsOpened,
         insufficientBirdRecordings,
+        nextRecordingEnabled,
         handleAnswerClick,
         handleNextRecording,
         handleNextQuestion,
@@ -133,7 +134,13 @@ export default function QuizQuestions ({ params, onRepeatQuiz, onFinished }: Qui
         {correctAnswer && <div className={classes.correctAnswer}>Správná odpověď</div>}
         {incorrectAnswer && <div className={classes.incorrectAnswer}>Nesprávná odpověď</div>}
 
-        {isEducation && <div className={classes.nextRecording}><Button onClick={handleNextRecording}>Zkusit jinou nahrávku</Button></div>}
+        {isEducation &&
+            <div className={classes.nextRecording}>
+                <Button
+                    disabled={!nextRecordingEnabled}
+                    onClick={handleNextRecording}>{nextRecordingEnabled ? 'Zkusit jinou nahrávku' : 'Nedostatek nahrávek, již nelze zkusit jinou nahrávku'}</Button>
+            </div>
+        }
 
         <div className={classes.nextQuestion}>
             {!isLastQuestion && <Button

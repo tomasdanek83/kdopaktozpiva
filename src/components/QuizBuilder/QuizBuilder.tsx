@@ -128,8 +128,8 @@ export default function QuizBuilder ({ initialParams, onBuild }: QuizBuilderProp
                         value={quality}
                         onChange={handleQualityChange}
                         label="Kvalita nahrávek">
-                        <MenuItem value={'high'}>Pouze kvalitní nahrávky</MenuItem>
-                        <MenuItem value={'all'}>Všechny nahrávky</MenuItem>
+                        <MenuItem value={'high'}>Pouze kvalitní nahrávky (A,B,C)</MenuItem>
+                        <MenuItem value={'all'}>Všechny nahrávky (A,B,C,D,E)</MenuItem>
                     </Select>
                 </FormControl>
             </div>
