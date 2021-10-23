@@ -1,13 +1,14 @@
 import React, { ReactElement, useState, useEffect } from 'react'
 import { QuizParams } from '../../model/QuizParams.model'
 import { Bird } from '../../model/Bird.model'
-import { Typography, Button, TextField, createStyles, makeStyles, Theme, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core'
+import { Typography, Button, TextField, createStyles, makeStyles, Theme, FormControl, InputLabel, Select, MenuItem, Drawer } from '@material-ui/core'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import { useBirdsApi } from '../../hooks/useBirdsApi'
 import { AutocompleteChangeReason, AutocompleteChangeDetails } from '@material-ui/lab'
 import { SoundType } from '../../api/SoundType.model'
 import { QuizMode } from '../../model/QuizMode.model'
 import { RecordingQualityLevel } from '../../model/RecordingQualityLevel.model'
+import BirdsByLocationSearch from '../BirdsByLocationSearch/BirdsByLocationSearch'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -29,6 +30,7 @@ export default function QuizBuilder ({ initialParams, onBuild }: QuizBuilderProp
     const [soundType, setSoundType] = useState<SoundType>('all')
     const [quizMode, setQuizMode] = useState<QuizMode>('education')
     const [quality, setQuality] = useState<RecordingQualityLevel>('high')
+    const [birdsByLocationSearchOpened, setBirdsByLocationSearchOpened] = useState<boolean>(false)
 
     const { getAllCzechBirds } = useBirdsApi()
 
@@ -40,6 +42,20 @@ export default function QuizBuilder ({ initialParams, onBuild }: QuizBuilderProp
 
     const handleQuestionCountChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
         setQuestionCount(Number(event.target.value))
+    }
+
+    const toggleBirdsByLocationSearch = (open: boolean) => (
+        event: React.KeyboardEvent | React.MouseEvent
+    ) => {
+        if (
+            event.type === 'keydown' &&
+            ((event as React.KeyboardEvent).key === 'Tab' ||
+                (event as React.KeyboardEvent).key === 'Shift')
+        ) {
+            return
+        }
+
+        setBirdsByLocationSearchOpened(open)
     }
 
     const handleBirdsChange = (
@@ -88,6 +104,14 @@ export default function QuizBuilder ({ initialParams, onBuild }: QuizBuilderProp
             </div>
 
             <div className={classes.formField}>
+                <Drawer
+                    anchor="right"
+                    open={birdsByLocationSearchOpened}
+                    onClose={toggleBirdsByLocationSearch(false)}>
+                    <BirdsByLocationSearch></BirdsByLocationSearch>
+                </Drawer>
+                <Button onClick={toggleBirdsByLocationSearch(true)}>Přidat druhy podle lokality</Button>
+
                 <Autocomplete
                     multiple
                     id="tags-standard"
