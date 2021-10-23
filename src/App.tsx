@@ -1,4 +1,4 @@
-import { AppBar, Button, Container, createStyles, IconButton, makeStyles, Theme, Toolbar, Typography } from '@material-ui/core'
+import { AppBar, Button, Container, createMuiTheme, createStyles, IconButton, makeStyles, Theme, ThemeProvider, Toolbar, Typography } from '@material-ui/core'
 import React, { ReactElement, useState } from 'react'
 import './App.scss'
 import Quiz from './components/Quiz/Quiz'
@@ -40,27 +40,31 @@ function App (): ReactElement {
     setAppView('about')
   }
 
+  const theme = createMuiTheme()
+
   return (
-    <div className={classes.root}>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" className={classes.title}>
-            Kdopak to zpívá?
-          </Typography>
+    <ThemeProvider theme={theme}>
+      <div className={classes.root}>
+        <AppBar position="static">
+          <Toolbar>
+            <Typography variant="h6" className={classes.title}>
+              Kdopak to zpívá?
+            </Typography>
 
-          <Button onClick={handleNewQuiz} color="inherit">Nový kvíz</Button>
+            <Button onClick={handleNewQuiz} color="inherit">Nový kvíz</Button>
 
-          <IconButton onClick={handleAbout} color="inherit">
-            <InfoIcon></InfoIcon>
-          </IconButton>
-        </Toolbar>
-      </AppBar>
+            <IconButton onClick={handleAbout} color="inherit">
+              <InfoIcon></InfoIcon>
+            </IconButton>
+          </Toolbar>
+        </AppBar>
 
-      <Container className={classes.container} maxWidth="sm">
-        {appView === 'about' && <About />}
-        {appView === 'quiz' && <Quiz resetToken={resetToken} />}
-      </Container>
-    </div>
+        <Container className={classes.container} maxWidth="sm">
+          {appView === 'about' && <About />}
+          {appView === 'quiz' && <Quiz resetToken={resetToken} />}
+        </Container>
+      </div>
+    </ThemeProvider>
   )
 }
 
