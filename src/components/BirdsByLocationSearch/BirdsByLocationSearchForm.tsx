@@ -81,7 +81,7 @@ export default function BirdsByLocationSearchForm ({
 
             <div className={classes.formField}>
                 <TextField
-                    label="Poloměr"
+                    label="Poloměr (0-50)"
                     type="number"
                     value={radius}
                     variant="outlined"
@@ -90,7 +90,7 @@ export default function BirdsByLocationSearchForm ({
 
             <div className={classes.formField}>
                 <TextField
-                    label="Stáří (počet měsíců)"
+                    label="Stáří (počet měsíců 1-60)"
                     type="number"
                     value={timerange}
                     variant="outlined"

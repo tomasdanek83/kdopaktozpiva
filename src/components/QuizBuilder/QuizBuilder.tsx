@@ -1,7 +1,7 @@
 import React, { ReactElement, useState, useEffect } from 'react'
 import { QuizParams } from '../../model/QuizParams.model'
 import { Bird } from '../../model/Bird.model'
-import { Typography, Button, TextField, createStyles, makeStyles, Theme, FormControl, InputLabel, Select, MenuItem, Drawer } from '@material-ui/core'
+import { Typography, Button, TextField, createStyles, makeStyles, Theme, FormControl, InputLabel, Select, MenuItem, Modal } from '@material-ui/core'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import { useBirdsApi } from '../../hooks/useBirdsApi'
 import { AutocompleteChangeReason, AutocompleteChangeDetails } from '@material-ui/lab'
@@ -104,12 +104,11 @@ export default function QuizBuilder ({ initialParams, onBuild }: QuizBuilderProp
             </div>
 
             <div className={classes.formField}>
-                <Drawer
-                    anchor="right"
+                <Modal
                     open={birdsByLocationSearchOpened}
                     onClose={toggleBirdsByLocationSearch(false)}>
                     <BirdsByLocationSearch></BirdsByLocationSearch>
-                </Drawer>
+                </Modal>
                 <Button onClick={toggleBirdsByLocationSearch(true)}>Přidat druhy podle lokality</Button>
 
                 <Autocomplete

@@ -1,10 +1,9 @@
-import { createStyles, makeStyles, Theme, Typography } from '@material-ui/core'
+import { Box, createStyles, LinearProgress, makeStyles, Theme, Typography } from '@material-ui/core'
 import React, { ReactElement, useState } from 'react'
 import { BirdsByLocationFilters } from '../../api/BirdsByLocationFilters.model'
-import { useBirdsByLocationApi } from '../../hooks/useBirdsByLocationApi'
 import BirdsByLocationSearchForm from './BirdsByLocationSearchForm'
-import { useSnackbar } from 'notistack'
-import { BirdQuantity } from '../../api/BirdQuantity.model'
+import BirdsByLocationSearchResults from './BirdsByLocationSearchResults'
+import useBirdsByLocationSearch from './useBirdsByLocationSearch'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -22,35 +21,34 @@ const defaultValues: BirdsByLocationFilters = {
 }
 
 export default function BirdsByLocationSearch (): ReactElement {
-    const [filters] = useState<BirdsByLocationFilters>(defaultValues)
-    const [birdQuantities, setBirdQuantities] = useState<BirdQuantity[]>([])
+    const [filters, setFilters] = useState<BirdsByLocationFilters>(defaultValues)
+
+    const { birdQuantities, loading, search } = useBirdsByLocationSearch()
 
     const classes = useStyles()
 
-    const { getBirdsByLocation } = useBirdsByLocationApi()
-    const { enqueueSnackbar } = useSnackbar()
-
     const handleSearch = (filters: BirdsByLocationFilters): void => {
-        console.log('handleSearch', filters)
-
-        getBirdsByLocation(filters).then(result => {
-            console.log('AVIF search result', result)
-
-            setBirdQuantities(result)
-        }).catch(error => {
-            console.error('AVIF search failed', error)
-            enqueueSnackbar('Failed to birds by location', { variant: 'error' })
-        })
+        setFilters(filters)
+        search(filters)
     }
 
     return (<div className={classes.root}>
         <Typography variant="h5">Přidat druhy podle lokality</Typography>
 
-        {filters != null && <BirdsByLocationSearchForm
-            defaultValues={filters}
-            onSearch={handleSearch}></BirdsByLocationSearchForm>
+        {filters != null &&
+            <BirdsByLocationSearchForm
+                defaultValues={filters}
+                onSearch={handleSearch}></BirdsByLocationSearchForm>
         }
 
-        {birdQuantities.map(bq => <div key={bq.name}>{bq.name}: {bq.quantity}</div>)}
+        {loading &&
+            <Box>
+                <LinearProgress />
+            </Box>
+        }
+
+        {birdQuantities != null &&
+            <BirdsByLocationSearchResults birdQuantities={birdQuantities}></BirdsByLocationSearchResults>
+        }
     </div>)
 }
