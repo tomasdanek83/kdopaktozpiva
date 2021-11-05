@@ -1,56 +1,11 @@
-import { Button, createStyles, makeStyles, Theme, Typography, CircularProgress, Drawer } from '@material-ui/core'
+import { Button, Typography, CircularProgress, Drawer } from '@mui/material'
 import React, { ReactElement } from 'react'
 import { QuizParams } from '../../model/QuizParams.model'
 import { QuizSummary } from '../../model/QuizSummary.model'
 import RecordingDetails from '../RecordingDetails/RecordingDetails'
 import RecordingPlayer from '../RecordingPlayer/RecordingPlayer'
 import useQuizQuestions from './useQuizQuestions'
-
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        player: {
-            marginTop: '1rem'
-        },
-        answers: {
-            textAlign: 'center',
-            marginTop: '1rem'
-        },
-        answer: {
-            margin: theme.spacing(1),
-            whiteSpace: 'nowrap'
-        },
-        correctAnswer: {
-            display: 'flex',
-            justifyContent: 'center',
-            marginTop: '1rem',
-            color: 'green'
-        },
-        incorrectAnswer: {
-            display: 'flex',
-            justifyContent: 'center',
-            marginTop: '1rem',
-            color: 'red'
-        },
-        nextRecording: {
-            display: 'flex',
-            justifyContent: 'center',
-            marginTop: '1rem'
-        },
-        nextQuestion: {
-            display: 'flex',
-            justifyContent: 'center',
-            marginTop: '1rem'
-        },
-        loading: {
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center'
-        },
-        loadingText: {
-            marginLeft: '1rem'
-        }
-    })
-)
+import { Box } from '@mui/system'
 
 export type QuizQuestionsProps = {
     params: QuizParams
@@ -77,12 +32,15 @@ export default function QuizQuestions ({ params, onRepeatQuiz, onFinished }: Qui
         toggleRecordingDetails
     } = useQuizQuestions(params, onFinished)
 
-    const classes = useStyles()
-
     if (loading) {
-        return (<div className={classes.loading}>
-            <CircularProgress variant="indeterminate" value={progress} /><span className={classes.loadingText}>Připravuji kvíz...</span>
-        </div>)
+        return (<Box sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+        }}>
+            <CircularProgress variant="indeterminate" value={progress} />
+            <Box sx={{ marginLeft: '1rem' }}>Připravuji kvíz...</Box>
+        </Box >)
     }
 
     if (insufficientBirdRecordings.length > 0) {
@@ -108,41 +66,66 @@ export default function QuizQuestions ({ params, onRepeatQuiz, onFinished }: Qui
             Otázka {question?.index}/{params.questionCount}
         </Typography>
 
-        <div className={classes.player}>
+        <Box sx={{ marginTop: '1rem' }}>
             <RecordingPlayer recording={recording} autoPlay={true}></RecordingPlayer>
-        </div>
+        </Box>
 
-        <div className={classes.player}>
+        <Box sx={{ marginTop: '1rem' }}>
             <Button onClick={toggleRecordingDetails(true)}>Informace o nahrávce</Button>
             <Drawer anchor="right" open={recordingDetailsOpened} onClose={toggleRecordingDetails(false)}>
                 <RecordingDetails recording={recording}></RecordingDetails>
             </Drawer>
-        </div>
+        </Box>
 
-        <div className={classes.answers}>
+        <Box sx={{
+            textAlign: 'center',
+            marginTop: '1rem'
+        }}>
             {params.birds.map((bird, index) => {
                 return <Button
                     onClick={() => { handleAnswerClick(bird) }}
-                    className={classes.answer}
+                    sx={{
+                        margin: '1rem',
+                        whiteSpace: 'nowrap'
+                    }}
                     variant="outlined"
                     disabled={!isEducation && answered}
                     key={index}>{bird.czechName}
                 </Button>
             })}
-        </div>
+        </Box>
 
-        {correctAnswer && <div className={classes.correctAnswer}>Správná odpověď</div>}
-        {incorrectAnswer && <div className={classes.incorrectAnswer}>Nesprávná odpověď</div>}
+        {correctAnswer && <Box sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            marginTop: '1rem',
+            color: 'green'
+        }}>Správná odpověď</Box>}
+
+        {incorrectAnswer && <Box sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            marginTop: '1rem',
+            color: 'red'
+        }}>Nesprávná odpověď</Box>}
 
         {isEducation &&
-            <div className={classes.nextRecording}>
+            <Box sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                marginTop: '1rem'
+            }}>
                 <Button
                     disabled={!nextRecordingEnabled}
                     onClick={handleNextRecording}>{nextRecordingEnabled ? 'Zkusit jinou nahrávku' : 'Nedostatek nahrávek, již nelze zkusit jinou nahrávku'}</Button>
-            </div>
+            </Box>
         }
 
-        <div className={classes.nextQuestion}>
+        <Box sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            marginTop: '1rem'
+        }}>
             {!isLastQuestion && <Button
                 onClick={handleNextQuestion}
                 disabled={!answered}
@@ -154,6 +137,6 @@ export default function QuizQuestions ({ params, onRepeatQuiz, onFinished }: Qui
                 disabled={!answered}
                 variant="contained"
                 color="primary">Zobrazit výsledky</Button>}
-        </div>
+        </Box>
     </>)
 }
