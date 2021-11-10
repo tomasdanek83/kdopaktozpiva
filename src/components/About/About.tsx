@@ -1,4 +1,4 @@
-import { Typography } from '@material-ui/core'
+import { Typography } from '@mui/material'
 import React, { ReactElement } from 'react'
 
 const version = '0.3'

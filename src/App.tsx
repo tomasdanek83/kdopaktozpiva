@@ -1,33 +1,14 @@
-import { AppBar, Button, Container, createMuiTheme, createStyles, IconButton, makeStyles, Theme, ThemeProvider, Toolbar, Typography } from '@material-ui/core'
 import React, { ReactElement, useState } from 'react'
 import './App.scss'
 import Quiz from './components/Quiz/Quiz'
 import About from './components/About/About'
-import InfoIcon from '@material-ui/icons/Info'
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      flexGrow: 1
-    },
-    title: {
-      flexGrow: 1,
-      margin: theme.spacing(1),
-      color: 'white'
-    },
-    container: {
-      padding: '1rem'
-    },
-    about: {
-      color: 'white'
-    }
-  })
-)
+import { Box, ThemeProvider } from '@mui/system'
+import { AppBar, Button, Container, createTheme, IconButton, Toolbar, Typography } from '@mui/material'
+import InfoIcon from '@mui/icons-material/Info'
 
 type AppView = 'quiz' | 'about'
 
 function App (): ReactElement {
-  const classes = useStyles()
   const [appView, setAppView] = useState<AppView>('quiz')
   const [resetToken, setResetToken] = useState<string>()
 
@@ -40,14 +21,20 @@ function App (): ReactElement {
     setAppView('about')
   }
 
-  const theme = createMuiTheme()
+  const theme = createTheme()
 
   return (
     <ThemeProvider theme={theme}>
-      <div className={classes.root}>
+      <Box sx={{
+        flexGrow: 1
+      }}>
         <AppBar position="static">
           <Toolbar>
-            <Typography variant="h6" className={classes.title}>
+            <Typography variant="h6" sx={{
+              flexGrow: 1,
+              margin: theme.spacing(1),
+              color: 'white'
+            }}>
               Kdopak to zpívá?
             </Typography>
 
@@ -59,11 +46,14 @@ function App (): ReactElement {
           </Toolbar>
         </AppBar>
 
-        <Container className={classes.container} maxWidth="sm">
+        <Container sx={{
+          padding: '1rem'
+        }}
+          maxWidth="sm">
           {appView === 'about' && <About />}
           {appView === 'quiz' && <Quiz resetToken={resetToken} />}
         </Container>
-      </div>
+      </Box>
     </ThemeProvider>
   )
 }

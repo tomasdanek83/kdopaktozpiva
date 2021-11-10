@@ -1,17 +1,7 @@
-import { Button, createStyles, makeStyles, TextField, Theme } from '@material-ui/core'
+import { Button, TextField } from '@mui/material'
+import { Box } from '@mui/system'
 import React, { ReactElement, useState } from 'react'
 import { BirdsByLocationFilters } from '../../api/BirdsByLocationFilters.model'
-
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        root: {
-            padding: '1rem'
-        },
-        formField: {
-            marginTop: '1rem'
-        }
-    })
-)
 
 export type BirdsByLocationSearchFormProps = {
     defaultValues: BirdsByLocationFilters
@@ -26,8 +16,6 @@ export default function BirdsByLocationSearchForm ({
     const [lng, setLng] = useState<number>(defaultValues.lng)
     const [radius, setRadius] = useState<number>(defaultValues.radius)
     const [timerange, setTimerange] = useState<number>(defaultValues.timerange)
-
-    const classes = useStyles()
 
     const handleLatChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
         setLat(Number(event.target.value))
@@ -59,52 +47,66 @@ export default function BirdsByLocationSearchForm ({
         })
     }
 
-    return (<div className={classes.root}>
-        <form>
-            <div className={classes.formField}>
-                <TextField
-                    label="Šířka"
-                    type="number"
-                    value={lat}
-                    variant="outlined"
-                    onChange={handleLatChange} />
-            </div>
+    return (
+        <Box sx={{
+            padding: '1rem'
+        }}>
+            <form>
+                <Box sx={{
+                    marginTop: '1rem'
+                }}>
+                    <TextField
+                        label="Šířka"
+                        type="number"
+                        value={lat}
+                        variant="outlined"
+                        onChange={handleLatChange} />
+                </Box>
 
-            <div className={classes.formField}>
-                <TextField
-                    label="Délka"
-                    type="number"
-                    value={lng}
-                    variant="outlined"
-                    onChange={handleLngChange} />
-            </div>
+                <Box sx={{
+                    marginTop: '1rem'
+                }}>
+                    <TextField
+                        label="Délka"
+                        type="number"
+                        value={lng}
+                        variant="outlined"
+                        onChange={handleLngChange} />
+                </Box>
 
-            <div className={classes.formField}>
-                <TextField
-                    label="Poloměr (0-50)"
-                    type="number"
-                    value={radius}
-                    variant="outlined"
-                    onChange={handleRadiusChange} />
-            </div>
+                <Box sx={{
+                    marginTop: '1rem'
+                }}>
+                    <TextField
+                        label="Poloměr (0-50)"
+                        type="number"
+                        value={radius}
+                        variant="outlined"
+                        onChange={handleRadiusChange} />
+                </Box>
 
-            <div className={classes.formField}>
-                <TextField
-                    label="Stáří (počet měsíců 1-60)"
-                    type="number"
-                    value={timerange}
-                    variant="outlined"
-                    onChange={handleTimerangeChange} />
-            </div>
+                <Box sx={{
+                    marginTop: '1rem'
+                }}>
+                    <TextField
+                        label="Stáří (počet měsíců 1-60)"
+                        type="number"
+                        value={timerange}
+                        variant="outlined"
+                        onChange={handleTimerangeChange} />
+                </Box>
 
-            <div className={classes.formField}>
-                <Button
-                    type="button"
-                    disabled={!isValid()}
-                    variant="contained"
-                    color="primary"
-                    onClick={handleSubmit}>Vyhledat</Button>
-            </div>
-        </form>
-    </div>)
+                <Box sx={{
+                    marginTop: '1rem'
+                }}>
+                    <Button
+                        type="button"
+                        disabled={!isValid()}
+                        variant="contained"
+                        color="primary"
+                        onClick={handleSubmit}>Vyhledat</Button>
+                </Box>
+            </form>
+        </Box>
+    )
 }
