@@ -51,7 +51,11 @@ export default function useBirdsByLocationSearch (): useBirdsByLocationSearchSta
     }
 
     const removeDuplicates = (quantities: BirdByLocationQuantity[]): BirdByLocationQuantity[] => {
-        return quantities
+        const duplicates = quantities.filter(bq => quantities.some(bqi => bq.bird.xenoCantoName === bqi.bird.xenoCantoName && bqi.quantity > bq.quantity))
+
+        console.log('removeDuplicates', duplicates)
+
+        return quantities.filter(bq => !duplicates.includes(bq))
     }
 
     const search = (filters: BirdsByLocationFilters): void => {

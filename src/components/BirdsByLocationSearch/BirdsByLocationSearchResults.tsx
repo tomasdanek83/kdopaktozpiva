@@ -1,18 +1,17 @@
 import { IconButton, List, ListItem, ListItemText } from '@mui/material'
 import React, { ReactElement } from 'react'
 import { BirdByLocationQuantity } from '../../model/BirdQuantity.model'
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
-import { Bird } from '../../model/Bird.model'
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
 
 export type BirdsByLocationSearchResultsProps = {
     birdQuantities: BirdByLocationQuantity[]
-    onAddBird: (bird: Bird) => void
+    toggleBirdSelection: (birdQuantity: BirdByLocationQuantity) => void
 }
 
 export default function BirdsByLocationSearchResults ({
     birdQuantities,
-    onAddBird
+    toggleBirdSelection
 }: BirdsByLocationSearchResultsProps): ReactElement {
     if (birdQuantities.length === 0) {
         return (<div>Žádné výsledky</div>)
@@ -24,15 +23,17 @@ export default function BirdsByLocationSearchResults ({
             overflow: 'auto'
         }}>
             {birdQuantities.map(bq =>
-                <ListItem
+                <ListItem sx={{
+                    cursor: 'pointer'
+                }}
                     key={bq.bird.xenoCantoName}
+                    onClick={() => toggleBirdSelection(bq)}
                     secondaryAction={
                         <IconButton
                             edge="end"
                             aria-label="add"
-                            onClick={() => onAddBird(bq.bird)}
                             disabled={bq.selected}>
-                            {!bq.selected ? <AddCircleOutlineIcon color="primary" /> : <CheckCircleIcon />}
+                            {!bq.selected ? <RadioButtonUncheckedIcon /> : <CheckCircleIcon color="primary" />}
                         </IconButton>
                     }>
                     <ListItemText

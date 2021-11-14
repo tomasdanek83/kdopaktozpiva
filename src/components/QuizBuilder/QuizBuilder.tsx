@@ -93,7 +93,7 @@ export default function QuizBuilder ({ initialParams, onBuild }: QuizBuilderProp
                     onBirdsSelected={handleBirdsByLocationSelected}
                     onClose={toggleBirdsByLocationSearch} />
 
-                <Button onClick={toggleBirdsByLocationSearch}>Přidat druhy podle lokality (AVIF)</Button>
+                <Button onClick={toggleBirdsByLocationSearch}>Vybrat druhy podle lokality (AVIF)</Button>
 
                 <Autocomplete
                     multiple

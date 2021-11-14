@@ -1,7 +1,7 @@
 import { IconButton, List, ListItem, ListItemText } from '@mui/material'
 import React, { ReactElement } from 'react'
 import { Bird } from '../../model/Bird.model'
-import DeleteIcon from '@mui/icons-material/Delete'
+import ClearIcon from '@mui/icons-material/Clear'
 
 export type BirdsByLocationSelectedBirdsProps = {
     birds: Bird[]
@@ -19,13 +19,16 @@ export default function BirdsByLocationSelectedBirds ({
         }}>
             {birds.map(bird =>
                 <ListItem
+                    sx={{
+                        cursor: 'pointer'
+                    }}
                     key={bird.xenoCantoName}
+                    onClick={() => onRemoveBird(bird)}
                     secondaryAction={
                         <IconButton
                             edge="end"
-                            aria-label="remove"
-                            onClick={() => onRemoveBird(bird)}>
-                            <DeleteIcon />
+                            aria-label="remove">
+                            <ClearIcon />
                         </IconButton>
                     }>
                     <ListItemText

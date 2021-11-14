@@ -1,8 +1,9 @@
-import { Button, Grid, LinearProgress, Typography } from '@mui/material'
+import { Button, Grid, LinearProgress, Stack, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import React, { ReactElement, useState } from 'react'
 import { BirdsByLocationFilters } from '../../api/BirdsByLocationFilters.model'
 import { Bird } from '../../model/Bird.model'
+import { BirdByLocationQuantity } from '../../model/BirdQuantity.model'
 import BirdsByLocationSearchForm from './BirdsByLocationSearchForm'
 import BirdsByLocationSearchResults from './BirdsByLocationSearchResults'
 import BirdsByLocationSelectedBirds from './BirdsByLocationSelectedBirds'
@@ -34,9 +35,13 @@ export default function BirdsByLocationSearch ({
         search(filters)
     }
 
-    const handleAddBird = (bird: Bird): void => {
-        setSelectedBirds(birds => [...birds, bird])
-        markAsSelected(bird, true)
+    const handleToggleBirdSelection = (birdQuantity: BirdByLocationQuantity): void => {
+        if (birdQuantity.selected) {
+            handleRemoveBird(birdQuantity.bird)
+        } else {
+            setSelectedBirds(birds => [...birds, birdQuantity.bird])
+            markAsSelected(birdQuantity.bird, true)
+        }
     }
 
     const handleRemoveBird = (bird: Bird): void => {
@@ -45,19 +50,20 @@ export default function BirdsByLocationSearch ({
     }
 
     return (
-        <Box sx={{
+        <Stack sx={{
             padding: '1rem'
         }}>
             <Typography variant="h5">Přidat druhy podle lokality</Typography>
 
             <Grid container spacing={2}>
-                <Grid item xs={8}>
+                <Grid item xs={4}>
                     {filters != null &&
                         <BirdsByLocationSearchForm
                             defaultValues={filters}
                             onSearch={handleSearch}></BirdsByLocationSearchForm>
                     }
-
+                </Grid>
+                <Grid item xs={4}>
                     {loading &&
                         <Box>
                             <LinearProgress />
@@ -67,7 +73,7 @@ export default function BirdsByLocationSearch ({
                     {birdQuantities != null &&
                         <BirdsByLocationSearchResults
                             birdQuantities={birdQuantities}
-                            onAddBird={handleAddBird}></BirdsByLocationSearchResults>
+                            toggleBirdSelection={handleToggleBirdSelection}></BirdsByLocationSearchResults>
                     }
                 </Grid>
                 <Grid item xs={4}>
@@ -89,6 +95,6 @@ export default function BirdsByLocationSearch ({
                         onClick={() => onConfirm(selectedBirds)}>Použít</Button>
                 </Grid>
             </Grid>
-        </Box >
+        </Stack>
     )
 }

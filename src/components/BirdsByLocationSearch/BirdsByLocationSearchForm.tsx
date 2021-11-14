@@ -1,7 +1,7 @@
-import { Button, TextField } from '@mui/material'
-import { Box } from '@mui/system'
+import { Button, Stack, TextField } from '@mui/material'
 import React, { ReactElement, useState } from 'react'
 import { BirdsByLocationFilters } from '../../api/BirdsByLocationFilters.model'
+import MapyCzAutocomplete from './MapyCzAutocomplete'
 
 export type BirdsByLocationSearchFormProps = {
     defaultValues: BirdsByLocationFilters
@@ -49,64 +49,44 @@ export default function BirdsByLocationSearchForm ({
 
     return (
         <form>
-            <Box sx={{
-                display: 'flex'
-            }}>
-                <Box sx={{
-                    marginTop: '1rem'
-                }}>
-                    <TextField
-                        label="Šířka"
-                        type="number"
-                        value={lat}
-                        variant="outlined"
-                        onChange={handleLatChange} />
-                </Box>
+            <Stack spacing={2}>
+                <MapyCzAutocomplete></MapyCzAutocomplete>
 
-                <Box sx={{
-                    marginTop: '1rem'
-                }}>
-                    <TextField
-                        label="Délka"
-                        type="number"
-                        value={lng}
-                        variant="outlined"
-                        onChange={handleLngChange} />
-                </Box>
+                <TextField
+                    label="Šířka"
+                    type="number"
+                    value={lat}
+                    variant="outlined"
+                    onChange={handleLatChange} />
 
-                <Box sx={{
-                    marginTop: '1rem'
-                }}>
-                    <TextField
-                        label="Poloměr (0-50)"
-                        type="number"
-                        value={radius}
-                        variant="outlined"
-                        onChange={handleRadiusChange} />
-                </Box>
+                <TextField
+                    label="Délka"
+                    type="number"
+                    value={lng}
+                    variant="outlined"
+                    onChange={handleLngChange} />
 
-                <Box sx={{
-                    marginTop: '1rem'
-                }}>
-                    <TextField
-                        label="Stáří (počet měsíců 1-60)"
-                        type="number"
-                        value={timerange}
-                        variant="outlined"
-                        onChange={handleTimerangeChange} />
-                </Box>
+                <TextField
+                    label="Poloměr (0-50)"
+                    type="number"
+                    value={radius}
+                    variant="outlined"
+                    onChange={handleRadiusChange} />
 
-                <Box sx={{
-                    marginTop: '1rem'
-                }}>
-                    <Button
-                        type="button"
-                        disabled={!isValid()}
-                        variant="contained"
-                        color="primary"
-                        onClick={handleSubmit}>Vyhledat</Button>
-                </Box>
-            </Box>
+                <TextField
+                    label="Stáří (počet měsíců 1-60)"
+                    type="number"
+                    value={timerange}
+                    variant="outlined"
+                    onChange={handleTimerangeChange} />
+
+                <Button
+                    type="button"
+                    disabled={!isValid()}
+                    variant="contained"
+                    color="primary"
+                    onClick={handleSubmit}>Vyhledat</Button>
+            </Stack>
         </form>
     )
 }
