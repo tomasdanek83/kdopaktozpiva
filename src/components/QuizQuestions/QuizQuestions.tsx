@@ -47,7 +47,7 @@ export default function QuizQuestions ({ params, onRepeatQuiz, onFinished }: Qui
         return (<div>
             <p>Pro tyto druhy bohužel není k dispozici dostatečný počet nahrávek, upravte prosím parametry kvízu a zkuste to znovu</p>
             <ul>
-                {insufficientBirdRecordings.map(br => <li key={br.bird.scientificName}>{br.bird.czechName} ({br.recordings.length})</li>)}
+                {insufficientBirdRecordings.map(br => <li key={br.bird.xenoCantoName}>{br.bird.czechName} ({br.recordings.length})</li>)}
             </ul>
             <div>
                 <Button

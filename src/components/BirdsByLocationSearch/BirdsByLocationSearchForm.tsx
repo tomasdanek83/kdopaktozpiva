@@ -48,10 +48,10 @@ export default function BirdsByLocationSearchForm ({
     }
 
     return (
-        <Box sx={{
-            padding: '1rem'
-        }}>
-            <form>
+        <form>
+            <Box sx={{
+                display: 'flex'
+            }}>
                 <Box sx={{
                     marginTop: '1rem'
                 }}>
@@ -106,7 +106,7 @@ export default function BirdsByLocationSearchForm ({
                         color="primary"
                         onClick={handleSubmit}>Vyhledat</Button>
                 </Box>
-            </form>
-        </Box>
+            </Box>
+        </form>
     )
 }

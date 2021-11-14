@@ -1,4 +1,4 @@
-import { useSnackbar } from 'notistack'
+import { useSnackbar } from 'notistack-v5'
 import { useEffect, useState } from 'react'
 import { BirdQuantity } from '../../api/BirdQuantity.model'
 import { BirdsByLocationFilters } from '../../api/BirdsByLocationFilters.model'
@@ -11,6 +11,7 @@ export type useBirdsByLocationSearchState = {
     birdQuantities?: BirdByLocationQuantity[]
     loading: boolean
     search: (filters: BirdsByLocationFilters) => void
+    markAsSelected: (bird: Bird, selected: boolean) => void
 }
 
 export default function useBirdsByLocationSearch (): useBirdsByLocationSearchState {
@@ -30,20 +31,27 @@ export default function useBirdsByLocationSearch (): useBirdsByLocationSearchSta
     const getBirdQuantities = (quantities: BirdQuantity[]): BirdByLocationQuantity[] => {
         const sortedQuantities = quantities.sort((a, b) => b.quantity - a.quantity)
 
-        const unknownBirds = sortedQuantities.filter(bq => !allBirds.some(b => b.scientificName === bq.name))
+        const unknownBirds = sortedQuantities.filter(bq => !allBirds.some(b => b.xenoCantoName === bq.name || b.avifName === bq.name))
 
         if (unknownBirds.length > 0) {
             console.error('AVIF returned unknown birds:', unknownBirds)
         }
 
-        return sortedQuantities
+        const mappedQuantities = sortedQuantities
             .filter(bq => !unknownBirds.some(ub => ub.name === bq.name))
             .map(bq => {
                 return {
-                    bird: allBirds.find(b => b.scientificName === bq.name) as Bird,
-                    quantity: bq.quantity
+                    bird: allBirds.find(b => b.xenoCantoName === bq.name || b.avifName === bq.name) as Bird,
+                    quantity: bq.quantity,
+                    selected: false
                 }
             })
+
+        return removeDuplicates(mappedQuantities)
+    }
+
+    const removeDuplicates = (quantities: BirdByLocationQuantity[]): BirdByLocationQuantity[] => {
+        return quantities
     }
 
     const search = (filters: BirdsByLocationFilters): void => {
@@ -62,9 +70,32 @@ export default function useBirdsByLocationSearch (): useBirdsByLocationSearchSta
         })
     }
 
+    const markAsSelected = (bird: Bird, selected: boolean): void => {
+        if (birdQuantities == null) {
+            return
+        }
+
+        const index = birdQuantities.findIndex(b => b.bird.xenoCantoName === bird.xenoCantoName)
+
+        if (index === -1) {
+            return
+        }
+
+        const birdToUpdate = birdQuantities[index]
+
+        birdToUpdate.selected = selected
+
+        setBirdQuantities([
+            ...birdQuantities.slice(0, index),
+            birdToUpdate,
+            ...birdQuantities.slice(index + 1)
+        ])
+    }
+
     return {
         birdQuantities,
         loading,
-        search
+        search,
+        markAsSelected
     }
 }

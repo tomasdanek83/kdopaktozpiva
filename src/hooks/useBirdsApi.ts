@@ -15,7 +15,7 @@ const getAllCzechBirds = (): Bird[] => {
     return birdsWP.filter(b => b.isCzech)
 }
 const getBirdByName = (name: string): Bird | undefined => {
-    return getAllBirds().find(b => b.czechName === name || b.scientificName === name)
+    return getAllBirds().find(b => b.czechName === name || b.xenoCantoName === name)
 }
 
 export const useBirdsApi = (): BirdsApi => {

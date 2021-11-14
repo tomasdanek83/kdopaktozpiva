@@ -8,7 +8,7 @@ import { BirdRecordings } from '../../model/BirdRecordings.model'
 import { Question } from '../../model/Question.model'
 import { QuizParams } from '../../model/QuizParams.model'
 import { QuizSummary } from '../../model/QuizSummary.model'
-import { useSnackbar } from 'notistack'
+import { useSnackbar } from 'notistack-v5'
 
 export type useQuizQuestionsState = {
     question?: Question
@@ -54,7 +54,7 @@ export default function useQuizQuestions (
         const loadBirdRecordings = (): void => {
             params.birds.forEach(bird => {
                 const filters: SearchFilters = {
-                    name: bird.scientificName,
+                    name: bird.xenoCantoName,
                     type: params.type,
                     quality: params.quality
                 }
@@ -152,7 +152,7 @@ export default function useQuizQuestions (
 
         // If there are not enough remaining recordings, disable next recording for remaining questions
         if ((remainingBirdQuestions.length + 1) > (remainingRecordings.length - 1)) {
-            console.log(`Not enough recordings for ${question.bird.scientificName} to show next recording, disabling the button`, remainingBirdQuestions.length, remainingRecordings.length)
+            console.log(`Not enough recordings for ${question.bird.xenoCantoName} to show next recording, disabling the button`, remainingBirdQuestions.length, remainingRecordings.length)
             setNextRecordingEnabled(false)
         }
     }

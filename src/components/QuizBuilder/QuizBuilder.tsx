@@ -1,13 +1,13 @@
 import React, { ReactElement, useState, useEffect } from 'react'
 import { QuizParams } from '../../model/QuizParams.model'
 import { Bird } from '../../model/Bird.model'
-import { Typography, Button, TextField, FormControl, InputLabel, Select, MenuItem, Modal, SelectChangeEvent, Autocomplete, AutocompleteChangeReason, AutocompleteChangeDetails } from '@mui/material'
+import { Typography, Button, TextField, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent, Autocomplete, AutocompleteChangeReason, AutocompleteChangeDetails } from '@mui/material'
 import { useBirdsApi } from '../../hooks/useBirdsApi'
 import { SoundType } from '../../api/SoundType.model'
 import { QuizMode } from '../../model/QuizMode.model'
 import { RecordingQualityLevel } from '../../model/RecordingQualityLevel.model'
-import BirdsByLocationSearch from '../BirdsByLocationSearch/BirdsByLocationSearch'
 import { Box } from '@mui/system'
+import BirdsByLocationSearchModal from '../BirdsByLocationSearch/BirdsByLocationSearchModal'
 
 export type QuizBuilderProps = {
     initialParams: QuizParams
@@ -33,18 +33,13 @@ export default function QuizBuilder ({ initialParams, onBuild }: QuizBuilderProp
         setQuestionCount(Number(event.target.value))
     }
 
-    const toggleBirdsByLocationSearch = (open: boolean) => (
-        event: React.KeyboardEvent | React.MouseEvent
-    ) => {
-        if (
-            event.type === 'keydown' &&
-            ((event as React.KeyboardEvent).key === 'Tab' ||
-                (event as React.KeyboardEvent).key === 'Shift')
-        ) {
-            return
-        }
+    const toggleBirdsByLocationSearch = (): void => {
+        setBirdsByLocationSearchOpened(state => !state)
+    }
 
-        setBirdsByLocationSearchOpened(open)
+    const handleBirdsByLocationSelected = (selectedBirds: Bird[]): void => {
+        setBirds(selectedBirds)
+        setBirdsByLocationSearchOpened(false)
     }
 
     const handleBirdsChange = (
@@ -93,12 +88,12 @@ export default function QuizBuilder ({ initialParams, onBuild }: QuizBuilderProp
             </Box>
 
             <Box sx={{ marginTop: '1rem' }}>
-                <Modal
+                <BirdsByLocationSearchModal
                     open={birdsByLocationSearchOpened}
-                    onClose={toggleBirdsByLocationSearch(false)}>
-                    <BirdsByLocationSearch></BirdsByLocationSearch>
-                </Modal>
-                <Button onClick={toggleBirdsByLocationSearch(true)}>Přidat druhy podle lokality</Button>
+                    onBirdsSelected={handleBirdsByLocationSelected}
+                    onClose={toggleBirdsByLocationSearch} />
+
+                <Button onClick={toggleBirdsByLocationSearch}>Přidat druhy podle lokality (AVIF)</Button>
 
                 <Autocomplete
                     multiple
