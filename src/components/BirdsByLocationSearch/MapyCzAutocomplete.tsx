@@ -1,35 +1,59 @@
-import { Autocomplete, TextField } from '@mui/material'
+import { Autocomplete, Stack, TextField } from '@mui/material'
+import { useSnackbar } from 'notistack-v5'
 import React, { ReactElement, useState } from 'react'
+import { useMapyCzSearchApi } from '../../hooks/useMapyCzSearchApi'
 
 export type MapyCzLocation = {
+    id: string
     name: string
+    description: string
     lat: number
     lng: number
 }
 
-export default function MapyCzAutocomplete (): ReactElement {
+export type MapyCzAutocompleteProps = {
+    onLocationSelected: (location: MapyCzLocation) => void
+}
+
+export default function MapyCzAutocomplete ({
+    onLocationSelected
+}: MapyCzAutocompleteProps): ReactElement {
     const [value, setValue] = useState<MapyCzLocation | null>(null)
     const [inputValue, setInputValue] = useState('')
     const [options, setOptions] = React.useState<MapyCzLocation[]>([])
 
+    const { search } = useMapyCzSearchApi()
+    const { enqueueSnackbar } = useSnackbar()
+
     const handleLocationSelected = (location: MapyCzLocation | null): void => {
-        setOptions(location != null ? [location, ...options] : options)
+        setOptions(location != null ? [location] : [])
         setValue(location)
+
+        if (location != null) {
+            onLocationSelected(location)
+        }
     }
 
     React.useEffect(() => {
-        setOptions([
-            {
-                name: 'Milíčovský rybník',
-                lat: 50.0256036,
-                lng: 14.5394797
-            },
-            {
-                name: 'Holásecká jezera',
-                lat: 49.1477883,
-                lng: 16.6436922
-            }
-        ])
+        search(inputValue).then(result => {
+            const locations =
+                result.result.map(ri => {
+                    return {
+                        id: ri.userData.id,
+                        name: ri.userData.suggestFirstRow,
+                        description: ri.userData.suggestSecondRow,
+                        lat: parseFloat(ri.userData.latitude),
+                        lng: parseFloat(ri.userData.longitude)
+                    }
+                })
+
+            console.log('MapyCz search result', locations)
+
+            setOptions(locations)
+        }).catch(error => {
+            console.error('MapyCz search failed', error)
+            enqueueSnackbar('Failed to birds by location', { variant: 'error' })
+        })
     }, [inputValue])
 
     return (
@@ -37,6 +61,7 @@ export default function MapyCzAutocomplete (): ReactElement {
             options={options}
             getOptionLabel={(option: MapyCzLocation) => option.name}
             value={value}
+            filterOptions={(x) => x}
             onChange={(event: any, newValue: MapyCzLocation | null) => {
                 handleLocationSelected(newValue)
             }}
@@ -50,6 +75,16 @@ export default function MapyCzAutocomplete (): ReactElement {
                     label="Název lokality/adresa"
                 />
             )}
+            renderOption={(props, option) => {
+                return (
+                    <li {...props} key={option.id}>
+                        <Stack spacing={2}>
+                            <div><strong>{option.name}</strong></div>
+                            <div>{option.description}</div>
+                        </Stack>
+                    </li>
+                )
+            }}
         />
     )
 }

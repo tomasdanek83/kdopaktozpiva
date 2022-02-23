@@ -45,8 +45,10 @@ switch($_SERVER['REQUEST_METHOD']){
         $lng = $_GET["lng"];
         $radius = $_GET["radius"];
         $timerange = $_GET["timerange"];
+        $monthfrom = $_GET["monthfrom"];
+        $monthto = $_GET["monthto"];
 
-        $url = "http://birds.cz:8889/v1/zastavky/species_by_location?public=true&lat=$lat&lng=$lng&radius=$radius&timerange=$timerange";
+        $url = "http://birds.cz:8889/v1/zastavky/species_by_location?public=true&lat=$lat&lng=$lng&radius=$radius&timerange=$timerange&monthfrom=$monthfrom&monthto=$monthto";
 
         $get_data = callAPI('GET', $url, false);
 

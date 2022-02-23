@@ -13,7 +13,9 @@ const defaultValues: BirdsByLocationFilters = {
     lat: 49.2111914,
     lng: 16.5143472,
     radius: 5,
-    timerange: 12
+    timerange: 12,
+    monthFrom: 0,
+    monthTo: 0
 }
 
 export type BirdsByLocationSearchProps = {
@@ -50,51 +52,66 @@ export default function BirdsByLocationSearch ({
     }
 
     return (
-        <Stack sx={{
-            padding: '1rem'
-        }}>
-            <Typography variant="h5">Přidat druhy podle lokality</Typography>
+        <Stack
+            spacing={2}>
+            <Box sx={{
+                flexShrink: 0
+            }}>
+                <Typography variant="h5">Přidat druhy podle lokality</Typography>
+            </Box>
 
-            <Grid container spacing={2}>
-                <Grid item xs={4}>
-                    {filters != null &&
-                        <BirdsByLocationSearchForm
-                            defaultValues={filters}
-                            onSearch={handleSearch}></BirdsByLocationSearchForm>
-                    }
-                </Grid>
-                <Grid item xs={4}>
-                    {loading &&
-                        <Box>
-                            <LinearProgress />
-                        </Box>
-                    }
-
-                    {birdQuantities != null &&
-                        <BirdsByLocationSearchResults
-                            birdQuantities={birdQuantities}
-                            toggleBirdSelection={handleToggleBirdSelection}></BirdsByLocationSearchResults>
-                    }
-                </Grid>
-                <Grid item xs={4}>
-                    <BirdsByLocationSelectedBirds
-                        birds={selectedBirds}
-                        onRemoveBird={handleRemoveBird}></BirdsByLocationSelectedBirds>
-                </Grid>
-
+            <Box sx={{
+                flexGrow: 1,
+                minHeight: '100%',
+                alignItems: 'stretch'
+            }}>
                 <Grid
                     container
-                    item
-                    xs={12}
-                    justifyContent="flex-end">
+                    spacing={2}
+                >
+                    <Grid item xs={4}>
+                        {filters != null &&
+                            <BirdsByLocationSearchForm
+                                defaultValues={filters}
+                                onSearch={handleSearch}></BirdsByLocationSearchForm>
+                        }
+                    </Grid>
+                    <Grid item xs={4}>
+                        {loading &&
+                            <Box>
+                                <LinearProgress />
+                            </Box>
+                        }
+
+                        {birdQuantities != null &&
+                            <BirdsByLocationSearchResults
+                                birdQuantities={birdQuantities}
+                                toggleBirdSelection={handleToggleBirdSelection}></BirdsByLocationSearchResults>
+                        }
+                    </Grid>
+                    <Grid item xs={4}>
+                        <BirdsByLocationSelectedBirds
+                            birds={selectedBirds}
+                            onRemoveBird={handleRemoveBird}></BirdsByLocationSelectedBirds>
+                    </Grid>
+                </Grid>
+            </Box>
+
+            <Box sx={{
+                flexShrink: 0
+            }}>
+                <Stack
+                    direction="row"
+                    justifyContent="flex-end"
+                    spacing={2}>
                     <Button
                         variant="text"
                         onClick={onCancel}>Zrušit</Button>
                     <Button
                         variant="contained"
                         onClick={() => onConfirm(selectedBirds)}>Použít</Button>
-                </Grid>
-            </Grid>
+                </Stack>
+            </Box>
         </Stack>
     )
 }

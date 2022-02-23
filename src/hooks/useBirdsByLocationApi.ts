@@ -14,6 +14,14 @@ const getQueryParams = (filters: BirdsByLocationFilters): URLSearchParams => {
   params.append('radius', filters.radius.toString())
   params.append('timerange', filters.timerange.toString())
 
+  if (filters.monthFrom > 0) {
+    params.append('monthfrom', filters.monthFrom.toString())
+  }
+
+  if (filters.monthTo > 0) {
+    params.append('monthto', filters.monthTo.toString())
+  }
+
   return params
 }
 
