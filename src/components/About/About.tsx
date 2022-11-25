@@ -1,7 +1,7 @@
-import { Typography } from '@material-ui/core'
+import { Typography } from '@mui/material'
 import React, { ReactElement } from 'react'
 
-const version = '0.2'
+const version = '0.3'
 
 export default function About (): ReactElement {
     return (<>
@@ -10,22 +10,23 @@ export default function About (): ReactElement {
         </Typography>
 
         <Typography variant="body1">
-            <p>Autor aplikace: Tomáš Daněk</p>
-            <p>Připomínky a náměty na vylepšení pište prosím na <a href="mailto:info@kdopaktozpiva.cz">info@kdopaktozpiva.cz</a></p>
+            Autor aplikace: Tomáš Daněk
+        </Typography>
+
+        <Typography variant="body1">
+            Připomínky a náměty na vylepšení pište prosím na <a href="mailto:info@kdopaktozpiva.cz">info@kdopaktozpiva.cz</a>
         </Typography>
 
         <Typography variant="h6">
             Zdroje dat
         </Typography>
 
-        <Typography variant="body1">
-            <ul>
-                <li><a href="https://www.xeno-canto.org/">www.xeno-canto.org</a> - Nahrávky</li>
-            </ul>
-        </Typography>
+        <ul>
+            <li><a href="https://www.xeno-canto.org/">www.xeno-canto.org</a> - Nahrávky</li>
+        </ul>
 
         <Typography variant="body1">
-            <p>Verze aplikace: {version}</p>
+            Verze aplikace: {version}
         </Typography>
     </>)
 }

@@ -1,21 +1,13 @@
 import React, { ReactElement, useState, useEffect } from 'react'
 import { QuizParams } from '../../model/QuizParams.model'
 import { Bird } from '../../model/Bird.model'
-import { Typography, Button, TextField, createStyles, makeStyles, Theme, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core'
-import Autocomplete from '@material-ui/lab/Autocomplete'
+import { Typography, Button, TextField, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent, Autocomplete, AutocompleteChangeReason, AutocompleteChangeDetails } from '@mui/material'
 import { useBirdsApi } from '../../hooks/useBirdsApi'
-import { AutocompleteChangeReason, AutocompleteChangeDetails } from '@material-ui/lab'
 import { SoundType } from '../../api/SoundType.model'
 import { QuizMode } from '../../model/QuizMode.model'
 import { RecordingQualityLevel } from '../../model/RecordingQualityLevel.model'
-
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        formField: {
-            marginTop: '1rem'
-        }
-    })
-)
+import { Box } from '@mui/system'
+import BirdsByLocationSearchModal from '../BirdsByLocationSearch/BirdsByLocationSearchModal'
 
 export type QuizBuilderProps = {
     initialParams: QuizParams
@@ -29,10 +21,9 @@ export default function QuizBuilder ({ initialParams, onBuild }: QuizBuilderProp
     const [soundType, setSoundType] = useState<SoundType>('all')
     const [quizMode, setQuizMode] = useState<QuizMode>('education')
     const [quality, setQuality] = useState<RecordingQualityLevel>('high')
+    const [birdsByLocationSearchOpened, setBirdsByLocationSearchOpened] = useState<boolean>(false)
 
     const { getAllCzechBirds } = useBirdsApi()
-
-    const classes = useStyles()
 
     useEffect(() => {
         setAllBirds(getAllCzechBirds())
@@ -40,6 +31,15 @@ export default function QuizBuilder ({ initialParams, onBuild }: QuizBuilderProp
 
     const handleQuestionCountChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
         setQuestionCount(Number(event.target.value))
+    }
+
+    const toggleBirdsByLocationSearch = (): void => {
+        setBirdsByLocationSearchOpened(state => !state)
+    }
+
+    const handleBirdsByLocationSelected = (selectedBirds: Bird[]): void => {
+        setBirds(selectedBirds)
+        setBirdsByLocationSearchOpened(false)
     }
 
     const handleBirdsChange = (
@@ -50,15 +50,15 @@ export default function QuizBuilder ({ initialParams, onBuild }: QuizBuilderProp
         setBirds(value)
     }
 
-    const handleSoundTypeChange = (event: React.ChangeEvent<{ value: unknown }>): void => {
+    const handleSoundTypeChange = (event: SelectChangeEvent<SoundType>): void => {
         setSoundType(event.target.value as SoundType)
     }
 
-    const handleQuizModeChange = (event: React.ChangeEvent<{ value: unknown }>): void => {
+    const handleQuizModeChange = (event: SelectChangeEvent<QuizMode>): void => {
         setQuizMode(event.target.value as QuizMode)
     }
 
-    const handleQualityChange = (event: React.ChangeEvent<{ value: unknown }>): void => {
+    const handleQualityChange = (event: SelectChangeEvent<RecordingQualityLevel>): void => {
         setQuality(event.target.value as RecordingQualityLevel)
     }
 
@@ -78,16 +78,23 @@ export default function QuizBuilder ({ initialParams, onBuild }: QuizBuilderProp
         </Typography>
 
         <form onSubmit={handleSubmit}>
-            <div className={classes.formField}>
+            <Box sx={{ marginTop: '1rem' }}>
                 <TextField
                     label="Počet otázek"
                     type="number"
                     value={questionCount}
                     variant="outlined"
                     onChange={handleQuestionCountChange} />
-            </div>
+            </Box>
 
-            <div className={classes.formField}>
+            <Box sx={{ marginTop: '1rem' }}>
+                <BirdsByLocationSearchModal
+                    open={birdsByLocationSearchOpened}
+                    onBirdsSelected={handleBirdsByLocationSelected}
+                    onClose={toggleBirdsByLocationSearch} />
+
+                <Button onClick={toggleBirdsByLocationSearch}>Vybrat druhy podle lokality (AVIF)</Button>
+
                 <Autocomplete
                     multiple
                     id="tags-standard"
@@ -103,9 +110,9 @@ export default function QuizBuilder ({ initialParams, onBuild }: QuizBuilderProp
                         />
                     )}
                 />
-            </div>
+            </Box>
 
-            <div className={classes.formField}>
+            <Box sx={{ marginTop: '1rem' }}>
                 <FormControl variant="outlined">
                     <InputLabel id="sound-type-label">Typ zvuku</InputLabel>
                     <Select
@@ -118,24 +125,24 @@ export default function QuizBuilder ({ initialParams, onBuild }: QuizBuilderProp
                         <MenuItem value={'call'}>Pouze volání</MenuItem>
                     </Select>
                 </FormControl>
-            </div>
+            </Box>
 
-            <div className={classes.formField}>
-                <FormControl variant="outlined" className={classes.formField}>
+            <Box sx={{ marginTop: '1rem' }}>
+                <FormControl variant="outlined" sx={{ marginTop: '1rem' }}>
                     <InputLabel id="quality-label">Kvalita nahrávek</InputLabel>
                     <Select
                         labelId="quality-label"
                         value={quality}
                         onChange={handleQualityChange}
                         label="Kvalita nahrávek">
-                        <MenuItem value={'high'}>Pouze kvalitní nahrávky</MenuItem>
-                        <MenuItem value={'all'}>Všechny nahrávky</MenuItem>
+                        <MenuItem value={'high'}>Pouze kvalitní nahrávky (A,B,C)</MenuItem>
+                        <MenuItem value={'all'}>Všechny nahrávky (A,B,C,D,E)</MenuItem>
                     </Select>
                 </FormControl>
-            </div>
+            </Box>
 
-            <div className={classes.formField}>
-                <FormControl variant="outlined" className={classes.formField}>
+            <Box sx={{ marginTop: '1rem' }}>
+                <FormControl variant="outlined" sx={{ marginTop: '1rem' }}>
                     <InputLabel id="quiz-mode-label">Režim kvízu</InputLabel>
                     <Select
                         labelId="quiz-mode-label"
@@ -146,15 +153,15 @@ export default function QuizBuilder ({ initialParams, onBuild }: QuizBuilderProp
                         <MenuItem value={'competition'}>Soutěžní (jeden pokus na každou otázku )</MenuItem>
                     </Select>
                 </FormControl>
-            </div>
+            </Box>
 
-            <div className={classes.formField}>
+            <Box sx={{ marginTop: '1rem' }}>
                 <Button
                     type="submit"
                     disabled={birds.length < 2}
                     variant="contained"
                     color="primary">Vytvořit</Button>
-            </div>
+            </Box>
         </form>
     </>)
 }

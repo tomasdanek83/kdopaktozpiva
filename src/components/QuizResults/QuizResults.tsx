@@ -1,23 +1,8 @@
 import React, { ReactElement } from 'react'
 import { QuizSummary } from '../../model/QuizSummary.model'
-import { Button, createStyles, makeStyles, Theme, Typography } from '@material-ui/core'
 import AnswerDetails from './AnswerDetails'
-
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        summary: {
-            marginBottom: '1rem'
-        },
-        buttons: {
-            display: 'flex',
-            justifyContent: 'center',
-            marginTop: '1rem'
-        },
-        button: {
-            marginLeft: '1rem'
-        }
-    })
-)
+import { Box } from '@mui/system'
+import { Button, Typography } from '@mui/material'
 
 export type QuizResultsProps = {
     summary: QuizSummary
@@ -26,8 +11,6 @@ export type QuizResultsProps = {
 }
 
 export default function QuizResults ({ summary, onRepeatQuiz, onNewQuiz }: QuizResultsProps): ReactElement {
-    const classes = useStyles()
-
     const correctCount = summary.answers.filter(answer => answer.bird === answer.pickedBird).length
 
     return (<>
@@ -35,7 +18,9 @@ export default function QuizResults ({ summary, onRepeatQuiz, onNewQuiz }: QuizR
             Výsledky
         </Typography>
 
-        <div className={classes.summary}>Správné odpovědi: {correctCount} ze {summary.answers.length}</div>
+        <Box sx={{
+            marginBottom: '1rem'
+        }}>Správné odpovědi: {correctCount} ze {summary.answers.length}</Box>
 
         <Typography variant="h6">
             Vaše odpovědi
@@ -45,17 +30,25 @@ export default function QuizResults ({ summary, onRepeatQuiz, onNewQuiz }: QuizR
             return <AnswerDetails answer={answer} key={answer.index}></AnswerDetails>
         })}
 
-        <div className={classes.buttons}>
+        <Box sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            marginTop: '1rem'
+        }}>
             <Button
-                className={classes.button}
+                sx={{
+                    marginLeft: '1rem'
+                }}
                 onClick={onRepeatQuiz}
                 variant="contained"
                 color="primary">Spustit znovu</Button>
             <Button
-                className={classes.button}
+                sx={{
+                    marginLeft: '1rem'
+                }}
                 onClick={onNewQuiz}
                 variant="contained"
                 color="primary">Vytvořit nový kvíz</Button>
-        </div>
+        </Box>
     </>)
 }

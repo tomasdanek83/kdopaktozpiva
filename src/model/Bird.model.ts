@@ -1,6 +1,7 @@
 export type Bird = {
     czechName: string
-    scientificName: string
+    xenoCantoName: string
+    avifName?: string
     englishName?: string
     isCzech: boolean
 }

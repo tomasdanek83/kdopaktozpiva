@@ -3,4 +3,6 @@ export type BirdsByLocationFilters = {
     lng: number
     radius: number
     timerange: number
+    monthFrom: number
+    monthTo: number
 }

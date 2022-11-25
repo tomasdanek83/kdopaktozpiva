@@ -8,7 +8,7 @@ import { BirdRecordings } from '../../model/BirdRecordings.model'
 import { Question } from '../../model/Question.model'
 import { QuizParams } from '../../model/QuizParams.model'
 import { QuizSummary } from '../../model/QuizSummary.model'
-import { useSnackbar } from 'notistack'
+import { useSnackbar } from 'notistack-v5'
 
 export type useQuizQuestionsState = {
     question?: Question
@@ -18,6 +18,7 @@ export type useQuizQuestionsState = {
     loading: boolean
     progress?: number
     answered: boolean
+    nextRecordingEnabled: boolean
     recordingDetailsOpened: boolean
     insufficientBirdRecordings: BirdRecordings[]
     handleAnswerClick: (bird: Bird) => void
@@ -44,6 +45,7 @@ export default function useQuizQuestions (
     const [recordingsHistory, setRecordingsHistory] = useState<Recording[]>([])
     const [recordingDetailsOpened, setRecordingDetailsOpened] = useState(false)
     const [insufficientBirdRecordings, setInsufficientBirdRecordings] = useState<BirdRecordings[]>([])
+    const [nextRecordingEnabled, setNextRecordingEnabled] = useState<boolean>(true)
 
     const recordingsApi = useRecordingsApi()
     const { enqueueSnackbar } = useSnackbar()
@@ -52,7 +54,7 @@ export default function useQuizQuestions (
         const loadBirdRecordings = (): void => {
             params.birds.forEach(bird => {
                 const filters: SearchFilters = {
-                    name: bird.scientificName,
+                    name: bird.xenoCantoName,
                     type: params.type,
                     quality: params.quality
                 }
@@ -83,38 +85,60 @@ export default function useQuizQuestions (
         if (birdRecordings.length === params.birds.length) {
             console.log('Recordings loaded for all birds', birdRecordings)
 
-            const generatedQuestions: Question[] = []
+            const generatedQuestions = generateQuestions()
+            console.log('Questions', generatedQuestions)
 
-            const insufficientRecordings: BirdRecordings[] =
-                birdRecordings.filter(br => br.recordings.length < params.questionCount)
+            const insufficientRecordings = getInsufficientRecordings(generatedQuestions)
 
             if (insufficientRecordings.length > 0) {
-                console.log('insufficientBirdRecordings', insufficientRecordings)
                 setInsufficientBirdRecordings(insufficientRecordings)
                 setLoading(false)
                 return
             }
 
-            for (let i = 0; i < params.questionCount; i++) {
-                const randomBird = params.birds[Math.floor(Math.random() * params.birds.length)]
-
-                generatedQuestions.push({
-                    index: i + 1,
-                    bird: randomBird,
-                    birdRecordings: birdRecordings.find(br => br.bird === randomBird) as BirdRecordings
-                })
-            }
-
             setQuestions(generatedQuestions)
-            console.log('Questions', generatedQuestions)
             const firstQuestion = generatedQuestions[0]
             setCurrentQuestion(firstQuestion)
-            setRandomRecording(firstQuestion)
+            setRandomRecording(firstQuestion, generatedQuestions)
             setLoading(false)
         }
     }, [birdRecordings])
 
-    const setRandomRecording = (question: Question): void => {
+    // Generate given count of questions, birds are picked randomly
+    // TODO: Improve random generator so that there is reasonable distribution of birds
+    const generateQuestions = (): Question[] => {
+        const generatedQuestions: Question[] = []
+
+        for (let i = 0; i < params.questionCount; i++) {
+            const randomBird = params.birds[Math.floor(Math.random() * params.birds.length)]
+
+            generatedQuestions.push({
+                index: i + 1,
+                bird: randomBird,
+                birdRecordings: birdRecordings.find(br => br.bird === randomBird) as BirdRecordings
+            })
+        }
+
+        return generatedQuestions
+    }
+
+    // Get birds for which there are not enough recordings for all generated questions
+    const getInsufficientRecordings = (generatedQuestions: Question[]): BirdRecordings[] => {
+        const insufficientRecordings: BirdRecordings[] = []
+
+        birdRecordings.forEach(br => {
+            const recordingsNeeded = generatedQuestions.filter(question => question.bird === br.bird).length
+
+            if (recordingsNeeded > br.recordings.length) {
+                insufficientRecordings.push(br)
+            }
+        })
+
+        return insufficientRecordings
+    }
+
+    // Randomly pick recording from remaining recordings for given bird
+    const setRandomRecording = (question: Question, allQuestions: Question[]): void => {
         const remainingRecordings = question.birdRecordings.recordings.filter(r => !recordingsHistory.includes(r))
         const randomRecording = remainingRecordings[Math.floor(Math.random() * remainingRecordings.length)]
 
@@ -122,6 +146,15 @@ export default function useQuizQuestions (
 
         setRecording(randomRecording)
         setRecordingsHistory(prevState => [...prevState, randomRecording])
+
+        // Count how many recordings for this bird we need to finish the quiz
+        const remainingBirdQuestions = allQuestions.filter(q => q.bird === question.bird && q.index > question.index)
+
+        // If there are not enough remaining recordings, disable next recording for remaining questions
+        if ((remainingBirdQuestions.length + 1) > (remainingRecordings.length - 1)) {
+            console.log(`Not enough recordings for ${question.bird.xenoCantoName} to show next recording, disabling the button`, remainingBirdQuestions.length, remainingRecordings.length)
+            setNextRecordingEnabled(false)
+        }
     }
 
     const handleAnswerClick = (bird: Bird): void => {
@@ -148,7 +181,7 @@ export default function useQuizQuestions (
     const handleNextRecording = (): void => {
         setCorrectAnswer(false)
         setIncorrectAnswer(false)
-        setRandomRecording(currentQuestion as Question)
+        setRandomRecording(currentQuestion as Question, questions)
     }
 
     const handleNextQuestion = (): void => {
@@ -157,7 +190,7 @@ export default function useQuizQuestions (
         setCorrectAnswer(false)
         setIncorrectAnswer(false)
         setCurrentQuestion(nextQuestion)
-        setRandomRecording(nextQuestion)
+        setRandomRecording(nextQuestion, questions)
     }
 
     const handleFinished = (): void => {
@@ -192,6 +225,7 @@ export default function useQuizQuestions (
         answered: answers.some(a => a.index === currentQuestion?.index),
         recordingDetailsOpened,
         insufficientBirdRecordings,
+        nextRecordingEnabled,
         handleAnswerClick,
         handleNextRecording,
         handleNextQuestion,

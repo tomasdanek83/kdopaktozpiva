@@ -1,14 +1,8 @@
-import { createStyles, makeStyles, Theme, Typography } from '@material-ui/core'
+import { Typography } from '@mui/material'
+import { Box } from '@mui/system'
 import React, { ReactElement } from 'react'
 import { Recording } from '../../api/Recording.model'
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        root: {
-            padding: '1rem'
-        }
-    })
-)
 export type RecordingDetailsProps = {
     recording?: Recording
 }
@@ -18,22 +12,26 @@ export default function RecordingDetails ({ recording }: RecordingDetailsProps):
         return (<></>)
     }
 
-    const classes = useStyles()
-
-    return (<div className={classes.root}>
-        <Typography variant="h5">Informace o nahrávce</Typography>
-        <Typography>
-            <p></p>
-            <table>
-                <tr>
-                    <th>Odkaz</th>
-                    <td><a href={recording.url}>{recording.url.replace('//', '')}</a></td>
-                </tr>
-                <tr>
-                    <th>Lokalita</th>
-                    <td>{recording.loc}</td>
-                </tr>
-            </table>
-        </Typography>
-    </div>)
+    return (
+        <Box sx={{
+            padding: '1rem'
+        }}>
+            <Typography variant="h5">Informace o nahrávce</Typography>
+            <Typography>
+                <p></p>
+                <table>
+                    <tbody>
+                        <tr>
+                            <th>Odkaz</th>
+                            <td><a href={recording.url}>{recording.url.replace('//', '')}</a></td>
+                        </tr>
+                        <tr>
+                            <th>Lokalita</th>
+                            <td>{recording.loc}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </Typography>
+        </Box>
+    )
 }
